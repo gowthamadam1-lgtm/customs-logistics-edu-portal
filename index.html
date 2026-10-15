@@ -4557,7 +4557,14 @@ input[type="file"] {
   box-shadow: inset 4px 0 0 var(--amber);
 }
 
-/* On phones Home skips the leaderboard; it has its own page in the menu. */
+/* Desktop keeps the leaderboard on Home, so the menu button is phone-only.
+   On phones Home skips the leaderboard and it has its own page instead. */
+@media (min-width: 901px) {
+  .sidebar__item--phone {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .home-layout .home-rank .rail-card--rank {
     display: none;
@@ -5012,7 +5019,7 @@ input[type="file"] {
       <li><a href="#/home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
       <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
       <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
-      <li><a href="#/rank-report" class="sidebar__link" data-section="rank-report"><svg class="ico" aria-hidden="true"><use href="#i-podium"/></svg><span>Rank Report</span></a></li>
+      <li class="sidebar__item--phone"><a href="#/rank-report" class="sidebar__link" data-section="rank-report"><svg class="ico" aria-hidden="true"><use href="#i-podium"/></svg><span>Rank Report</span></a></li>
       <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
       <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
       <li><a href="#/kpi-report" class="sidebar__link" data-section="kpi-report"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Update KPI Report</span></a></li>
