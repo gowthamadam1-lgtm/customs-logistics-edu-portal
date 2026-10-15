@@ -4544,6 +4544,106 @@ input[type="file"] {
     display: none;
   }
 }
+
+/* ---------- status colours: passed / completed green, failed red, pending yellow (pass mark 60%) ---------- */
+:root {
+  --pass-ink: #1E6B3A;
+  --pass-bg: #E3F4E8;
+  --fail-ink: #A12F1F;
+  --fail-bg: #FBE7E3;
+  --pending-ink: #6B5000;
+  --pending-bg: #FFF1BF;
+}
+
+.clear-stamp {
+  color: var(--pass-ink);
+  background: var(--pass-bg);
+}
+
+.clear-stamp--fail {
+  color: var(--fail-ink);
+  background: var(--fail-bg);
+}
+
+.clear-stamp--fail::before {
+  content: '\2715';
+}
+
+.exam-chip--ready {
+  color: var(--pending-ink);
+  background: var(--pending-bg);
+  border-color: transparent;
+}
+
+.home-buttons .home-btn--done {
+  border-left-color: var(--pass-ink);
+}
+
+.home-buttons .home-btn--done::before {
+  content: '\2713  Completed';
+  color: var(--pass-ink);
+  background: var(--pass-bg);
+}
+
+/* learning path */
+.mini-flow__step--done .mini-flow__bubble {
+  background: var(--pass-ink);
+  border-color: var(--pass-ink);
+}
+
+.mini-flow__step--done .mini-flow__marks {
+  color: var(--pass-ink);
+  font-weight: 600;
+}
+
+.mini-flow__step--fail .mini-flow__bubble {
+  background: var(--fail-ink);
+  border-color: var(--fail-ink);
+}
+
+.mini-flow__step--fail .mini-flow__marks {
+  color: var(--fail-ink);
+}
+
+.mini-flow__step--next .mini-flow__marks {
+  color: var(--pending-ink);
+}
+
+.mini-flow__connector--done {
+  background: var(--pass-ink);
+}
+
+/* topic list: finished topics get a green marker */
+[id$="browse-topics-list"] .topic-item--done::before {
+  background: var(--pass-ink);
+  border-color: var(--pass-ink);
+}
+
+[id$="browse-topics-list"] .topic-item--fail::before {
+  background: var(--fail-ink);
+  border-color: var(--fail-ink);
+}
+
+/* quiz result box */
+.quiz-result--pass {
+  color: var(--pass-ink);
+  background: var(--pass-bg);
+  border-color: rgba(30, 107, 58, 0.3);
+}
+
+.quiz-result--fail {
+  color: var(--fail-ink);
+  background: var(--fail-bg);
+  border-color: rgba(161, 47, 31, 0.3);
+}
+
+/* learning material marked as completed */
+.home-btn.is-complete,
+.home-btn.is-complete:disabled {
+  color: var(--white);
+  background: #1E7A45;
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -5120,7 +5220,7 @@ input[type="file"] {
 
     <section class="panel" id="exams" data-panel>
       <h2>Exams</h2>
-      <p class="panel__lead">Every topic quiz in one place. Finished tests are marked Cleared and can be revised at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
+      <p class="panel__lead">Every topic quiz in one place. Finished tests show Passed in green or Failed in red; the pass mark is 60%. You can revise any test at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
       <div id="exams-list"></div>
     </section>
 
@@ -6335,12 +6435,17 @@ input[type="file"] {
         var topics = topicsRes.data;
         var topicIds = topics.map(function (t) { return t.id; });
 
-        sb
-          .from('topic_progress')
-          .select('topic_id, quiz_completed, quiz_score, completed_at')
-          .eq('user_id', currentProfile.id)
-          .in('topic_id', topicIds)
-          .then(function (progressRes) {
+        Promise.all([
+          sb
+            .from('topic_progress')
+            .select('topic_id, quiz_completed, quiz_score, completed_at')
+            .eq('user_id', currentProfile.id)
+            .in('topic_id', topicIds),
+          fetchQuestionCounts(topicIds)
+        ])
+          .then(function (results) {
+            var progressRes = results[0];
+            var questionCounts = results[1];
 
             var progressByTopic = {};
             if (!progressRes.error && progressRes.data) {
@@ -6358,15 +6463,18 @@ input[type="file"] {
               return !(p && p.quiz_completed);
             }) : -1;
 
-            titleEl.textContent = clearedCount + ' of ' + topics.length + ' checkpoints cleared';
+            titleEl.textContent = clearedCount + ' of ' + topics.length + ' topics completed';
             stepsEl.innerHTML = '';
 
             topics.forEach(function (topic, index) {
               var progress = progressByTopic[topic.id];
               var done = !!(progress && progress.quiz_completed);
 
+              var outcome = done ? quizOutcome(progress.quiz_score, questionCounts[topic.id]) : null;
+
               var stepEl = document.createElement('li');
               stepEl.className = 'mini-flow__step' + (done ? ' mini-flow__step--done' : '') +
+                (outcome && !outcome.passed ? ' mini-flow__step--fail' : '') +
                 (index === nextIndex ? ' mini-flow__step--next' : '');
 
               var nodeEl = document.createElement('div');
@@ -6383,8 +6491,10 @@ input[type="file"] {
               var marksEl = document.createElement('span');
               marksEl.className = 'mini-flow__marks';
               marksEl.textContent = done
-                ? 'Cleared, ' + (progress.quiz_score || 0) + ' marks'
-                : (index === nextIndex ? 'Next checkpoint' : 'Not started');
+                ? (outcome
+                  ? (outcome.passed ? 'Passed, ' : 'Failed, ') + (progress.quiz_score || 0) + ' of ' + questionCounts[topic.id]
+                  : 'Completed')
+                : (index === nextIndex ? 'Pending' : 'Not started');
 
               nodeEl.appendChild(bubbleEl);
               nodeEl.appendChild(nameEl);
@@ -6502,23 +6612,54 @@ input[type="file"] {
      completed work gets it.
   ======================================================== */
 
-  function buildClearStamp(completedAt, label) {
-    var stamp = document.createElement('span');
-    stamp.className = 'clear-stamp';
+  // A quiz is passed at 60% or more of its questions answered correctly.
+  var PASS_MARK = 0.6;
+
+  function quizOutcome(score, total) {
+    if (!total) {
+      return null;
+    }
+    var pct = Math.round(((score || 0) / total) * 100);
+    return { pct: pct, passed: (score || 0) / total >= PASS_MARK };
+  }
+
+  // Green "Passed 83%" or red "Failed 33%", with the date it was taken.
+  function buildResultLabel(score, total, completedAt) {
+    var outcome = quizOutcome(score, total);
+    var label = document.createElement('span');
+    label.className = 'clear-stamp' + (outcome && !outcome.passed ? ' clear-stamp--fail' : '');
 
     var word = document.createElement('span');
     word.className = 'clear-stamp__word';
-    word.textContent = label || 'Cleared';
-    stamp.appendChild(word);
+    word.textContent = outcome ? (outcome.passed ? 'Passed ' : 'Failed ') + outcome.pct + '%' : 'Completed';
+    label.appendChild(word);
 
     if (completedAt) {
       var date = document.createElement('span');
       date.className = 'clear-stamp__date';
       date.textContent = new Date(completedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-      stamp.appendChild(date);
+      label.appendChild(date);
     }
 
-    return stamp;
+    return label;
+  }
+
+  // Number of quiz questions in each topic, keyed by topic id.
+  function fetchQuestionCounts(topicIds) {
+    if (!topicIds.length) {
+      return Promise.resolve({});
+    }
+    return sb
+      .from('topic_questions_public')
+      .select('topic_id')
+      .in('topic_id', topicIds)
+      .then(function (res) {
+        var counts = {};
+        (res.data || []).forEach(function (row) {
+          counts[row.topic_id] = (counts[row.topic_id] || 0) + 1;
+        });
+        return counts;
+      });
   }
 
   /* ========================================================
@@ -6663,12 +6804,17 @@ input[type="file"] {
             return topic.id;
           });
 
-          sb
-            .from('topic_progress')
-            .select('topic_id, material_completed, quiz_completed, completed_at')
-            .eq('user_id', currentProfile.id)
-            .in('topic_id', topicIds)
-            .then(function (progressRes) {
+          Promise.all([
+            sb
+              .from('topic_progress')
+              .select('topic_id, material_completed, quiz_completed, quiz_score, completed_at')
+              .eq('user_id', currentProfile.id)
+              .in('topic_id', topicIds),
+            fetchQuestionCounts(topicIds)
+          ])
+            .then(function (results) {
+              var progressRes = results[0];
+              var questionCounts = results[1];
 
               var progressByTopic = {};
 
@@ -6712,8 +6858,11 @@ input[type="file"] {
                 var progress = progressByTopic[topic.id] || {};
                 var isNext = topic.id === nextTopicId;
 
+                var topicOutcome = progress.quiz_completed ? quizOutcome(progress.quiz_score, questionCounts[topic.id]) : null;
+
                 var card = document.createElement('div');
                 card.className = 'topic-item' + (progress.quiz_completed ? ' topic-item--done' : '') +
+                  (topicOutcome && !topicOutcome.passed ? ' topic-item--fail' : '') +
                   (isNext ? ' topic-item--next' : '');
 
                 var head = document.createElement('div');
@@ -6725,7 +6874,7 @@ input[type="file"] {
                 head.appendChild(titleEl);
 
                 if (progress.quiz_completed) {
-                  head.appendChild(buildClearStamp(progress.completed_at));
+                  head.appendChild(buildResultLabel(progress.quiz_score, questionCounts[topic.id], progress.completed_at));
                 }
 
                 var descriptionEl = document.createElement('p');
@@ -6868,7 +7017,7 @@ input[type="file"] {
               if (materialCompleted) {
                 completeBtn.textContent = '✓ Learning Material Completed';
                 completeBtn.disabled = true;
-                completeBtn.style.opacity = '0.7';
+                completeBtn.classList.add('is-complete');
               } else {
                 completeBtn.textContent = 'Mark Learning Material as Completed';
                 completeBtn.addEventListener('click', function () {
@@ -6920,7 +7069,7 @@ input[type="file"] {
           }
 
           button.textContent = '✓ Learning Material Completed';
-          button.style.opacity = '0.7';
+          button.classList.add('is-complete');
 
           var quizBtn = document.getElementById(ids.takeQuizBtn);
           quizBtn.style.display = 'inline-block';
@@ -7050,20 +7199,24 @@ input[type="file"] {
           var data = res.data;
           resultEl.innerHTML = '';
 
+          var outcome = quizOutcome(data.correctCount, data.total) || { pct: 0, passed: false };
+          var verdict = (outcome.passed ? 'Passed' : 'Not passed') + ': ' + data.correctCount + ' out of ' + data.total +
+            ' correct (' + outcome.pct + '%).';
+          var passNote = outcome.passed ? '' : ' The pass mark is 60%.';
+
           if (attemptMode === 'practice') {
             var practiceBox = document.createElement('div');
-            practiceBox.className = 'quiz-result';
-            practiceBox.innerHTML = '<strong>Practice attempt</strong><br><br>You got ' + data.correctCount +
-              ' out of ' + data.total + ' correct.<br>This attempt does not add marks. Your recorded score is unchanged.';
+            practiceBox.className = 'quiz-result ' + (outcome.passed ? 'quiz-result--pass' : 'quiz-result--fail');
+            practiceBox.innerHTML = '<strong>Practice attempt. ' + verdict + '</strong><br><br>' +
+              'This attempt does not add marks. Your recorded score is unchanged.' + passNote;
             resultEl.appendChild(practiceBox);
             submitBtn.disabled = false;
             return;
           }
 
           var box = document.createElement('div');
-          box.className = 'quiz-result';
-          box.innerHTML = '<strong>Quiz Completed</strong><br><br>You got ' + data.correctCount + ' out of ' +
-            data.total + ' correct.<br>Points awarded: +' + data.pointsAwarded;
+          box.className = 'quiz-result ' + (outcome.passed ? 'quiz-result--pass' : 'quiz-result--fail');
+          box.innerHTML = '<strong>' + verdict + '</strong><br><br>Points awarded: +' + data.pointsAwarded + '.' + passNote;
           resultEl.appendChild(box);
 
           // The submit-quiz function records completion on the server, so the
@@ -9246,11 +9399,11 @@ input[type="file"] {
 
           var chip;
           if (state === 'done') {
-            chip = buildClearStamp(progress.completed_at);
+            chip = buildResultLabel(progress.quiz_score, total, progress.completed_at);
           } else {
             chip = document.createElement('span');
             chip.className = 'exam-chip exam-chip--' + state;
-            chip.textContent = state === 'ready' ? 'Not taken' : 'Locked';
+            chip.textContent = state === 'ready' ? 'Pending' : 'Locked';
           }
 
           var button = document.createElement('button');
