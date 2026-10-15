@@ -1,5 +1,6 @@
--- OPTIONAL, not yet applied. Run it in the Supabase SQL Editor if you
--- want the last small speed-up. Nobody's access changes.
+-- ALREADY APPLIED on 2026-10-15 through the Supabase SQL Editor.
+-- Do not run it again: the rules it creates already exist, so it would fail.
+-- Kept here as a record. Nobody's access changed (checked afterwards).
 --
 -- Some tables have an "admins can do everything" rule (FOR ALL) next to
 -- the normal read rule, so every read checks both. This splits the admin
