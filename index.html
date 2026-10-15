@@ -4644,6 +4644,53 @@ input[type="file"] {
   background: #1E7A45;
   opacity: 1;
 }
+
+/* ---------- phones: progress panel lives on the Rank Report page ---------- */
+.rank-rail-slot .home-rank {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 1.5rem;
+  padding: 0.25rem 1.35rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  box-shadow: none;
+}
+
+.rank-rail-slot .home-rank .rail-card {
+  padding: 1.15rem 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.rank-rail-slot .home-rank .rail-card + .rail-card {
+  border-top: 1px solid var(--rule);
+}
+
+.rank-rail-slot .home-rank .rail-card h3 {
+  font-size: 0.95rem;
+}
+
+/* the page already lists everyone below, and the profile line shows your rank */
+.rank-rail-slot .rail-card--rank,
+.rank-rail-slot ~ .rank-standing {
+  display: none;
+}
+
+/* completed checkpoints in the dark "next checkpoint" box: green, bright enough for the navy ground */
+.next-up__stop--cleared {
+  border-color: #3FB56B;
+  background: #3FB56B;
+}
+
+.next-up__stop--cleared + .next-up__stop::before {
+  background: #3FB56B;
+}
 </style>
 </head>
 <body>
@@ -5212,6 +5259,7 @@ input[type="file"] {
     <section class="panel" id="rank-report" data-panel>
       <h2>Rank Report</h2>
       <p class="panel__lead">Learners ranked by points. Points come from your first attempt at each topic quiz, so retakes don't change the board.</p>
+      <div class="rank-rail-slot" id="rank-rail-slot"></div>
       <p class="rank-standing" id="rank-standing" hidden></p>
       <ol class="rank-list rank-list--page" id="rank-list-page">
         <li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="sr-only" role="status">Loading rankings</li>
@@ -11621,6 +11669,30 @@ input[type="file"] {
   ======================================================== */
 
   var PHONE_LAYOUT = window.matchMedia('(max-width: 900px)');
+
+  // Home's side panel (profile and rank, achievements, course progress) sits on
+  // Home on wide screens. On phones it moves to the top of the Rank Report page
+  // so Home stays short. It is moved, not copied, so the code that fills it in
+  // keeps working wherever it is.
+  (function placeProgressPanel() {
+    var panel = document.querySelector('#home-layout > .home-rank');
+    var homeLayout = document.getElementById('home-layout');
+    var rankSlot = document.getElementById('rank-rail-slot');
+
+    if (!panel || !homeLayout || !rankSlot) {
+      return;
+    }
+
+    function place() {
+      var target = PHONE_LAYOUT.matches ? rankSlot : homeLayout;
+      if (panel.parentNode !== target) {
+        target.appendChild(panel);
+      }
+    }
+
+    place();
+    PHONE_LAYOUT.addEventListener('change', place);
+  })();
 
   function wireSidebar(containerId) {
     var container = document.getElementById(containerId);
