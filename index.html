@@ -3728,55 +3728,30 @@ a,
 /* ---------- the stamp ---------- */
 .clear-stamp {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
   flex: none;
-  gap: 0.05rem;
-  padding: 0.28rem 0.6rem 0.24rem;
-  color: var(--stamp);
-  border: 2px solid currentColor;
-  border-radius: 6px;
-  outline: 1px solid currentColor;
-  outline-offset: 2px;
-  transform: rotate(-5deg);
-  font-family: var(--font-display);
-  line-height: 1;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.3;
   white-space: nowrap;
-  opacity: 0.9;
-  -webkit-mask-image: radial-gradient(circle at 30% 40%, #000 55%, rgba(0, 0, 0, 0.78) 100%);
-          mask-image: radial-gradient(circle at 30% 40%, #000 55%, rgba(0, 0, 0, 0.78) 100%);
+  color: var(--signal-ink);
+  background: #E6F1FB;
+  border-radius: 999px;
+}
+
+.clear-stamp::before {
+  content: '\2713';
+  font-weight: 700;
 }
 
 .clear-stamp__word {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase; /* stamps are lettered in capitals; this is the only all-caps text */
-}
-
-.clear-stamp__date {
-  font-family: var(--font-body);
-  font-size: 0.66rem;
   font-weight: 600;
 }
 
-/* A stamp lands once, when its list first appears; never loops. */
-@keyframes stamp-land {
-  0% { opacity: 0; transform: rotate(-5deg) scale(1.35); }
-  60% { opacity: 0.95; transform: rotate(-5deg) scale(0.96); }
-  100% { opacity: 0.9; transform: rotate(-5deg) scale(1); }
-}
-
-.panel.is-active .clear-stamp,
-.course-page .clear-stamp {
-  animation: stamp-land 0.42s var(--ease) backwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel.is-active .clear-stamp,
-  .course-page .clear-stamp {
-    animation: none;
-  }
+.clear-stamp__date {
+  font-weight: 400;
 }
 
 /* ---------- login ---------- */
@@ -4014,29 +3989,28 @@ a,
 }
 
 .home-buttons .home-btn--done {
-  border-left-color: var(--stamp);
   padding-right: 8rem;
 }
 
 .home-buttons .home-btn--done::before {
-  content: 'Cleared';
+  content: '\2713  Cleared';
+  white-space: pre;
   position: absolute;
   right: 1.25rem;
   top: 50%;
   margin: 0;
-  padding: 0.3rem 0.6rem;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--stamp);
-  background: none;
-  border: 2px solid currentColor;
-  border-radius: 6px;
-  outline: 1px solid currentColor;
-  outline-offset: 2px;
-  transform: translateY(-50%) rotate(-5deg);
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--signal-ink);
+  background: #E6F1FB;
+  border: 0;
+  border-radius: 999px;
+  outline: 0;
+  transform: translateY(-50%);
 }
 
 /* ---------- right rail: one ledger instead of a stack of cards ---------- */
@@ -4189,7 +4163,7 @@ a,
 }
 
 .topic-item__head .clear-stamp {
-  margin-top: -0.15rem;
+  margin-top: 0;
 }
 
 /* ---------- exams ---------- */
@@ -5146,7 +5120,7 @@ input[type="file"] {
 
     <section class="panel" id="exams" data-panel>
       <h2>Exams</h2>
-      <p class="panel__lead">Every topic quiz in one place. Finished tests are stamped Cleared and can be revised at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
+      <p class="panel__lead">Every topic quiz in one place. Finished tests are marked Cleared and can be revised at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
       <div id="exams-list"></div>
     </section>
 
