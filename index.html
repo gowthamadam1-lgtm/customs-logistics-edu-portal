@@ -4528,11 +4528,46 @@ input[type="file"] {
     min-height: 48px;
   }
 }
+
+/* ---------- Rank Report page ---------- */
+.rank-standing {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.rank-list--page {
+  max-width: 640px;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
+.rank-list--page .rank-list__item {
+  padding: 0.85rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+}
+
+.rank-list__item--me,
+.rank-list--page .rank-list__item--me {
+  border-color: var(--amber);
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+/* On phones Home skips the leaderboard; it has its own page in the menu. */
+@media (max-width: 900px) {
+  .home-layout .home-rank .rail-card--rank {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
 
 <!-- =========================================================
      LANDING PAGE
@@ -4977,6 +5012,7 @@ input[type="file"] {
       <li><a href="#/home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
       <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
       <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
+      <li><a href="#/rank-report" class="sidebar__link" data-section="rank-report"><svg class="ico" aria-hidden="true"><use href="#i-podium"/></svg><span>Rank Report</span></a></li>
       <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
       <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
       <li><a href="#/kpi-report" class="sidebar__link" data-section="kpi-report"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Update KPI Report</span></a></li>
@@ -5076,7 +5112,7 @@ input[type="file"] {
             </div>
           </section>
 
-          <section class="rail-card">
+          <section class="rail-card rail-card--rank">
             <h3>Rank Report</h3>
             <p class="home-rank__hint">Top learners by points earned answering questions.</p>
             <ol class="rank-list" id="rank-list">
@@ -5090,6 +5126,15 @@ input[type="file"] {
     <section class="panel" id="help" data-panel>
       <h2>Help</h2>
       <p>Content for this section is on its way.</p>
+    </section>
+
+    <section class="panel" id="rank-report" data-panel>
+      <h2>Rank Report</h2>
+      <p class="panel__lead">Learners ranked by points. Points come from your first attempt at each topic quiz, so retakes don't change the board.</p>
+      <p class="rank-standing" id="rank-standing" hidden></p>
+      <ol class="rank-list rank-list--page" id="rank-list-page">
+        <li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="sr-only" role="status">Loading rankings</li>
+      </ol>
     </section>
 
     <section class="panel" id="exams" data-panel>
@@ -6199,51 +6244,79 @@ input[type="file"] {
   function loadRankReport() {
     loadAchievements();
 
-    var list = document.getElementById('rank-list');
-    if (!list) {
+    var lists = ['rank-list', 'rank-list-page'].map(function (id) {
+      return document.getElementById(id);
+    }).filter(Boolean);
+
+    if (lists.length === 0) {
       return;
     }
 
-    list.innerHTML = '<li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="sr-only" role="status">Loading rankings</li>';
+    lists.forEach(function (list) {
+      list.innerHTML = '<li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="sr-only" role="status">Loading rankings</li>';
+    });
+
+    var standing = document.getElementById('rank-standing');
 
     sb
       .from('profiles')
-      .select('username, points, avatar_url')
+      .select('id, username, points, avatar_url')
       .eq('role', 'user')
       .order('points', { ascending: false })
       .limit(25)
       .then(function (res) {
 
         if (res.error || !res.data || res.data.length === 0) {
-          list.innerHTML = '<li class="rank-list__empty">No rankings yet. Finish a topic quiz to put the first score on the board.</li>';
+          lists.forEach(function (list) {
+            list.innerHTML = '<li class="rank-list__empty">No rankings yet. Finish a topic quiz to put the first score on the board.</li>';
+          });
+          if (standing) {
+            standing.hidden = true;
+          }
           return;
         }
 
-        list.innerHTML = '';
+        var myIndex = currentProfile ? res.data.findIndex(function (user) {
+          return user.id === currentProfile.id;
+        }) : -1;
 
-        res.data.forEach(function (user, index) {
-          var li = document.createElement('li');
-          li.className = 'rank-list__item rank-list__item--' + (index + 1);
+        if (standing) {
+          if (myIndex !== -1) {
+            var me = res.data[myIndex];
+            standing.textContent = 'You are #' + (myIndex + 1) + ' of ' + res.data.length + ', with ' + (me.points || 0) + ((me.points || 0) === 1 ? ' point.' : ' points.');
+            standing.hidden = false;
+          } else {
+            standing.hidden = true;
+          }
+        }
 
-          var rankEl = document.createElement('span');
-          rankEl.className = 'rank-list__rank';
-          rankEl.textContent = '#' + (index + 1);
+        lists.forEach(function (list) {
+          list.innerHTML = '';
 
-          var avatarEl = makeAvatarThumb(user.avatar_url, user.username);
+          res.data.forEach(function (user, index) {
+            var li = document.createElement('li');
+            li.className = 'rank-list__item rank-list__item--' + (index + 1) + (index === myIndex ? ' rank-list__item--me' : '');
 
-          var nameEl = document.createElement('span');
-          nameEl.className = 'rank-list__name';
-          nameEl.textContent = user.username;
+            var rankEl = document.createElement('span');
+            rankEl.className = 'rank-list__rank';
+            rankEl.textContent = '#' + (index + 1);
 
-          var pointsEl = document.createElement('span');
-          pointsEl.className = 'rank-list__points';
-          pointsEl.textContent = (user.points || 0) + ' pts';
+            var avatarEl = makeAvatarThumb(user.avatar_url, user.username);
 
-          li.appendChild(rankEl);
-          li.appendChild(avatarEl);
-          li.appendChild(nameEl);
-          li.appendChild(pointsEl);
-          list.appendChild(li);
+            var nameEl = document.createElement('span');
+            nameEl.className = 'rank-list__name';
+            nameEl.textContent = user.username + (index === myIndex ? ' (you)' : '');
+
+            var pointsEl = document.createElement('span');
+            pointsEl.className = 'rank-list__points';
+            pointsEl.textContent = (user.points || 0) + ((user.points || 0) === 1 ? ' pt' : ' pts');
+
+            li.appendChild(rankEl);
+            li.appendChild(avatarEl);
+            li.appendChild(nameEl);
+            li.appendChild(pointsEl);
+            list.appendChild(li);
+          });
         });
       });
   }
@@ -11559,6 +11632,9 @@ input[type="file"] {
         }
         if (target === 'exams') {
           loadExams();
+        }
+        if (target === 'rank-report') {
+          loadRankReport();
         }
         if (target === 'kpi-report') {
           loadMyKpi();
