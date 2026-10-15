@@ -4086,7 +4086,7 @@ body.has-viewer { overflow: hidden; }
       <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
       <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
       <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
-      <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
+      <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
       <li><a href="#/kpi-report" class="sidebar__link" data-section="kpi-report"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Update KPI Report</span></a></li>
     </ul>
 
@@ -5510,7 +5510,11 @@ body.has-viewer { overflow: hidden; }
             }
 
             btn.addEventListener('click', function () {
-              openCourse(course.id, course.title, course.description);
+              if (opts.opensCoursePage) {
+                goToCoursePage(course.id);
+              } else {
+                openCourse(course.id, course.title, course.description);
+              }
             });
 
             wrap.appendChild(btn);
@@ -6068,6 +6072,8 @@ body.has-viewer { overflow: hidden; }
   var otherCoursesBrowser = createCourseBrowser({
     section: 'other',
     emptyMessage: 'No courses here yet. Check back soon.',
+    // Courses here open on their own full page (#course=<id>) instead of below the list.
+    opensCoursePage: true,
     ids: {
       layout: null,
       courses: 'other-browse-courses',
@@ -7411,6 +7417,7 @@ body.has-viewer { overflow: hidden; }
   // Opens the full-width course page in this same tab.
   function goToCoursePage(courseId, extra) {
     window.location.hash = courseHash(courseId, extra);
+    window.scrollTo(0, 0);
   }
 
   function parseCourseRoute() {
