@@ -5454,7 +5454,11 @@ p,
 
           if (res.error) {
             console.error('Could not load courses:', res.error);
-            root.innerHTML = '<p class="entry__error">Could not load courses: ' + res.error.message + '</p>';
+            root.innerHTML = '';
+            var errP = document.createElement('p');
+            errP.className = 'entry__error';
+            errP.textContent = 'Could not load courses: ' + res.error.message;
+            root.appendChild(errP);
             return;
           }
 
@@ -5515,7 +5519,11 @@ p,
 
           if (res.error) {
             console.error('Could not load topics:', res.error);
-            topicsRoot.innerHTML = '<p class="entry__error">Could not load topics: ' + res.error.message + '</p>';
+            topicsRoot.innerHTML = '';
+            var errP = document.createElement('p');
+            errP.className = 'entry__error';
+            errP.textContent = 'Could not load topics: ' + res.error.message;
+            topicsRoot.appendChild(errP);
             return;
           }
 
@@ -5797,7 +5805,11 @@ p,
 
           if (res.error) {
             console.error('Could not load questions:', res.error);
-            form.innerHTML = '<p class="entry__error">Could not load questions: ' + res.error.message + '</p>';
+            form.innerHTML = '';
+            var errP = document.createElement('p');
+            errP.className = 'entry__error';
+            errP.textContent = 'Could not load questions: ' + res.error.message;
+            form.appendChild(errP);
             return;
           }
 
@@ -5904,37 +5916,24 @@ p,
             data.total + ' correct.<br>Points awarded: +' + data.pointsAwarded;
           resultEl.appendChild(box);
 
-          sb
-            .from('topic_progress')
-            .upsert({
-              user_id: currentProfile.id,
-              topic_id: topicId,
-              material_completed: true,
-              quiz_completed: true,
-              quiz_score: data.correctCount,
-              completed_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id,topic_id' })
-            .then(function (progressRes) {
+          // The submit-quiz function records completion on the server, so the
+          // browser never writes quiz_completed / quiz_score itself.
+          if (data.isPractice) {
+            submitBtn.disabled = false;
+            return;
+          }
 
-              if (progressRes.error) {
-                console.error('Could not save quiz progress:', progressRes.error);
-                submitBtn.disabled = false;
-                return;
-              }
+          var nextBox = document.createElement('div');
+          nextBox.className = 'quiz-result';
+          nextBox.style.marginTop = '1rem';
+          nextBox.innerHTML = '✓ <strong>Topic completed!</strong><br><br>The next topic in the learning flow is now unlocked.';
+          resultEl.appendChild(nextBox);
 
-              var nextBox = document.createElement('div');
-              nextBox.className = 'quiz-result';
-              nextBox.style.marginTop = '1rem';
-              nextBox.innerHTML = '✓ <strong>Topic completed!</strong><br><br>The next topic in the learning flow is now unlocked.';
-              resultEl.appendChild(nextBox);
+          loadRankReport();
 
-              loadRankReport();
-
-              window.setTimeout(function () {
-                openCourse(currentCourseId, currentCourseTitle, currentCourseDescription, true);
-              }, 1500);
-            });
+          window.setTimeout(function () {
+            openCourse(currentCourseId, currentCourseTitle, currentCourseDescription, true);
+          }, 1500);
         });
     });
 
