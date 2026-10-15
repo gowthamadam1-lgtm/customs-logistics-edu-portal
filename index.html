@@ -4691,6 +4691,315 @@ input[type="file"] {
 .next-up__stop--cleared + .next-up__stop::before {
   background: #3FB56B;
 }
+
+/* ---------- confirmation dialog (permanent delete) ---------- */
+.confirm-dialog {
+  width: min(92vw, 460px);
+  padding: 0;
+  color: var(--ink);
+  background: var(--white);
+  border: 0;
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-lg);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(13, 23, 59, 0.55);
+}
+
+.confirm-dialog[open] {
+  animation: dialog-in 0.22s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.confirm-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.5rem;
+}
+
+.confirm-dialog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--navy);
+}
+
+.confirm-dialog__text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.confirm-dialog__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.confirm-dialog__label input {
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-weight: 400;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctrl);
+  background: var(--paper);
+}
+
+.confirm-dialog__label input:focus-visible {
+  outline: 3px solid rgba(59, 154, 225, 0.35);
+  border-color: var(--steel);
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.confirm-dialog__cancel,
+.confirm-dialog__danger {
+  min-height: 44px;
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--r-ctrl);
+  cursor: pointer;
+}
+
+.confirm-dialog__cancel {
+  color: var(--navy);
+  background: var(--white);
+  border: 1px solid var(--rule);
+}
+
+.confirm-dialog__danger {
+  color: var(--white);
+  background: var(--fail-ink, #A12F1F);
+  border: 0;
+}
+
+.confirm-dialog__danger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog[open] {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   TABLES
+   Desktop: one outlined block, light row dividers, no grid lines.
+   Phones: every row becomes a card of "Heading: value" lines.
+========================================================= */
+.panel table.ledger-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.panel .ledger-table th,
+.panel .ledger-table td {
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.panel .ledger-table th {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #F7FAFD;
+}
+
+.panel .ledger-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.panel .ledger-table tbody tr:nth-child(even) {
+  background: none;
+}
+
+.panel .ledger-table tbody tr {
+  transition: background-color 0.18s var(--ease);
+}
+
+.panel .ledger-table tbody tr:hover {
+  background: #F7FAFD;
+}
+
+.panel .ledger-table td .ledger-table__btn + .ledger-table__btn {
+  margin-left: 0.4rem;
+}
+
+/* status labels in tables */
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.pill--pass { color: var(--pass-ink); background: var(--pass-bg); }
+.pill--pending { color: var(--pending-ink); background: var(--pending-bg); }
+.pill--fail { color: var(--fail-ink); background: var(--fail-bg); }
+.pill--role { color: var(--white); background: var(--navy); }
+.pill--neutral { color: var(--muted); background: #EEF2F7; }
+
+@media (max-width: 900px) {
+  .panel table.ledger-table {
+    display: block;
+    overflow: visible;
+    background: none;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .panel .ledger-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .panel .ledger-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .panel .ledger-table tbody tr {
+    display: block;
+    padding: 0.35rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-card);
+  }
+
+  .panel .ledger-table tbody tr:hover {
+    background: var(--white);
+  }
+
+  .panel .ledger-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    text-align: right;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .panel .ledger-table tbody tr td:last-child {
+    border-bottom: 0;
+  }
+
+  .panel .ledger-table td[data-label]::before {
+    content: attr(data-label);
+    flex: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  /* the actions cell: buttons on their own line, full width */
+  .panel .ledger-table td[data-label="Action"] {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .panel .ledger-table td[data-label="Action"]::before {
+    flex-basis: 100%;
+  }
+
+  .panel .ledger-table td[data-label="Action"] .ledger-table__btn {
+    flex: 1;
+    min-height: 40px;
+    margin: 0;
+  }
+
+  .panel .ledger-table td .ledger-table__btn + .ledger-table__btn {
+    margin-left: 0;
+  }
+
+  /* messages such as "No sign-ups waiting" span the row */
+  .panel .ledger-table td:not([data-label]) {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+/* ---------- page transitions (View Transitions API) ----------
+   The menu stays put; only the content area moves: the old content fades
+   out quickly while the new content fades in and settles 8px upward.
+   Transform and opacity only, so it stays smooth on phones. */
+.view-app .content,
+.course-page__main {
+  view-transition-name: page-content;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.15s;
+}
+
+::view-transition-group(page-content) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(page-content) {
+  animation: vt-fade-out 0.1s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(page-content) {
+  animation: vt-rise-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .panel .ledger-table .ledger-table__btn {
+    white-space: nowrap;
+  }
+}
 </style>
 </head>
 <body>
@@ -5805,6 +6114,21 @@ input[type="file"] {
   </main>
 </div>
 
+<dialog class="confirm-dialog" id="delete-user-dialog" aria-labelledby="delete-user-title">
+  <form method="dialog" class="confirm-dialog__form" id="delete-user-form" novalidate>
+    <h2 class="confirm-dialog__title" id="delete-user-title">Delete account permanently?</h2>
+    <p class="confirm-dialog__text">This removes <strong id="delete-user-name"></strong>'s login, profile, quiz progress and points, KPI reports, profile photo and their own support tickets. It cannot be undone.</p>
+    <label class="confirm-dialog__label">Type the username to confirm
+      <input type="text" id="delete-user-confirm" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </label>
+    <p class="entry__error" id="delete-user-error" role="alert"></p>
+    <div class="confirm-dialog__actions">
+      <button type="button" class="confirm-dialog__cancel" id="delete-user-cancel">Cancel</button>
+      <button type="submit" class="confirm-dialog__danger" id="delete-user-submit" disabled>Delete permanently</button>
+    </div>
+  </form>
+</dialog>
+
 <div class="doc-viewer" id="doc-viewer" role="dialog" aria-modal="true" aria-labelledby="doc-viewer-title" hidden>
   <div class="doc-viewer__bar">
     <h2 class="doc-viewer__title" id="doc-viewer-title"></h2>
@@ -6013,7 +6337,28 @@ input[type="file"] {
      TRANSITION HELPERS
   ======================================================== */
 
+  // Where the browser supports View Transitions, the old and new screens
+  // cross-fade in one smooth step, run by the browser off the main work.
+  // Otherwise (or with reduced motion) the older fade below is used.
+  var REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function smoothTransition(update) {
+    if (typeof document.startViewTransition === 'function' && !REDUCED_MOTION.matches) {
+      document.startViewTransition(update);
+      return true;
+    }
+    return false;
+  }
+
   function fadeSwap(prevEl, nextEl, displayValue) {
+    if (smoothTransition(function () {
+      if (prevEl && prevEl !== nextEl) {
+        prevEl.style.display = 'none';
+      }
+      nextEl.style.display = displayValue;
+    })) {
+      return;
+    }
 
     function reveal() {
       nextEl.classList.add('is-entering');
@@ -6038,6 +6383,16 @@ input[type="file"] {
   }
 
   function fadeSwapPanel(prevPanel, nextPanel) {
+    if (prevPanel !== nextPanel && smoothTransition(function () {
+      if (prevPanel) {
+        prevPanel.classList.remove('is-active', 'is-leaving');
+      }
+      if (nextPanel) {
+        nextPanel.classList.add('is-active');
+      }
+    })) {
+      return;
+    }
 
     function reveal() {
       if (!nextPanel) {
@@ -7462,15 +7817,32 @@ input[type="file"] {
      ADMIN - LOAD LEARNERS
   ======================================================== */
 
+  // Small coloured label for table cells: pass (green), pending (yellow),
+  // fail (red), role (navy) or neutral (grey).
+  function buildPill(text, tone) {
+    var pill = document.createElement('span');
+    pill.className = 'pill pill--' + (tone || 'neutral');
+    pill.textContent = text;
+    return pill;
+  }
+
+  var learnersLoadToken = 0;
+
   function loadLearners() {
     var tbody = document.getElementById('admin-users-table-body');
-    tbody.innerHTML = '';
+    // Two loads can overlap (opening the admin view and the Learners page
+    // both ask); only the newest one draws, so rows are never doubled.
+    var token = ++learnersLoadToken;
 
     return sb
       .from('profiles')
-      .select('username, role, status')
+      .select('id, username, role, status')
       .order('username')
       .then(function (result) {
+        if (token !== learnersLoadToken) {
+          return;
+        }
+        tbody.innerHTML = '';
 
         if (result.error) {
           var row = document.createElement('tr');
@@ -7489,10 +7861,12 @@ input[type="file"] {
           nameCell.textContent = user.username;
 
           var roleCell = document.createElement('td');
-          roleCell.textContent = user.role;
+          roleCell.appendChild(buildPill(user.role === 'admin' ? 'Admin' : 'Learner', user.role === 'admin' ? 'role' : 'neutral'));
 
           var statusCell = document.createElement('td');
-          statusCell.textContent = user.status;
+          var statusTone = { approved: 'pass', pending: 'pending', rejected: 'fail' }[user.status] || 'neutral';
+          var statusText = { approved: 'Approved', pending: 'Pending', rejected: 'Rejected' }[user.status] || (user.status || '');
+          statusCell.appendChild(buildPill(statusText, statusTone));
 
           var actionCell = document.createElement('td');
 
@@ -7517,8 +7891,17 @@ input[type="file"] {
               showEditLearner(user.username);
             });
 
+            var deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', function () {
+              openDeleteUser(user, deleteBtn);
+            });
+
             actionCell.appendChild(roleBtn);
             actionCell.appendChild(editBtn);
+            actionCell.appendChild(deleteBtn);
           }
 
           row.appendChild(nameCell);
@@ -7531,8 +7914,90 @@ input[type="file"] {
   }
 
   /* ========================================================
+     ADMIN - DELETE AN ACCOUNT PERMANENTLY
+     Cannot be undone, so the admin types the username to unlock the
+     button. The server function removes the files and the login; the
+     database cascades the rest.
+  ======================================================== */
+
+  var deleteDialog = document.getElementById('delete-user-dialog');
+  var deleteConfirmInput = document.getElementById('delete-user-confirm');
+  var deleteSubmit = document.getElementById('delete-user-submit');
+  var deleteError = document.getElementById('delete-user-error');
+  var deleteTarget = null;
+  var deleteReturnFocus = null;
+
+  function openDeleteUser(user, triggerBtn) {
+    deleteTarget = user;
+    deleteReturnFocus = triggerBtn;
+    document.getElementById('delete-user-name').textContent = user.username;
+    deleteConfirmInput.value = '';
+    deleteError.textContent = '';
+    deleteSubmit.disabled = true;
+    deleteSubmit.textContent = 'Delete permanently';
+    deleteDialog.showModal();
+    deleteConfirmInput.focus();
+  }
+
+  function closeDeleteUser() {
+    deleteDialog.close();
+  }
+
+  deleteDialog.addEventListener('close', function () {
+    deleteTarget = null;
+    if (deleteReturnFocus && document.body.contains(deleteReturnFocus)) {
+      deleteReturnFocus.focus();
+    }
+  });
+
+  deleteConfirmInput.addEventListener('input', function () {
+    deleteSubmit.disabled = !deleteTarget || deleteConfirmInput.value.trim() !== deleteTarget.username;
+  });
+
+  document.getElementById('delete-user-cancel').addEventListener('click', closeDeleteUser);
+
+  document.getElementById('delete-user-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (!deleteTarget || deleteConfirmInput.value.trim() !== deleteTarget.username) {
+      return;
+    }
+
+    var target = deleteTarget;
+    deleteSubmit.disabled = true;
+    deleteSubmit.textContent = 'Deleting…';
+    deleteError.textContent = '';
+
+    sb.functions
+      .invoke('admin-manage-account', { body: { action: 'delete', targetId: target.id } })
+      .then(function (res) {
+
+        if (res.error) {
+          parseFunctionError(res.error, function (message) {
+            deleteError.textContent = 'Could not delete this account: ' + message;
+          });
+          deleteSubmit.disabled = false;
+          deleteSubmit.textContent = 'Delete permanently';
+          return;
+        }
+
+        deleteReturnFocus = null;
+        closeDeleteUser();
+
+        var statusEl = document.getElementById('role-status');
+        statusEl.textContent = target.username + ' was deleted permanently.';
+        statusEl.className = 'ledger-table__status entry__success';
+
+        loadLearners();
+        loadOverview();
+      });
+  });
+
+  /* ========================================================
      ADMIN - APPROVALS
   ======================================================== */
+
+  var approvalsLoadToken = 0;
 
   function loadPendingApprovals() {
     var tbody = document.getElementById('pending-users-table-body');
@@ -7540,7 +8005,7 @@ input[type="file"] {
       return;
     }
 
-    tbody.innerHTML = '';
+    var token = ++approvalsLoadToken;
 
     return sb
       .from('profiles')
@@ -7548,6 +8013,10 @@ input[type="file"] {
       .eq('status', 'pending')
       .order('created_at')
       .then(function (result) {
+        if (token !== approvalsLoadToken) {
+          return;
+        }
+        tbody.innerHTML = '';
 
         if (result.error) {
           var row = document.createElement('tr');
@@ -11669,6 +12138,36 @@ input[type="file"] {
   ======================================================== */
 
   var PHONE_LAYOUT = window.matchMedia('(max-width: 900px)');
+
+  // On phones each table row is shown as a card of "Heading: value" lines.
+  // Rows are drawn by many functions, so a watcher labels each new cell
+  // with its column heading (data-label) as soon as it appears.
+  (function labelTableCells() {
+    function label(table) {
+      var headings = Array.prototype.map.call(table.querySelectorAll('thead th'), function (th) {
+        return th.textContent.trim();
+      });
+      Array.prototype.forEach.call(table.querySelectorAll('tbody tr'), function (row) {
+        var column = 0;
+        Array.prototype.forEach.call(row.cells, function (cell) {
+          if (cell.colSpan === 1 && headings[column] && !cell.hasAttribute('data-label')) {
+            cell.setAttribute('data-label', headings[column]);
+          }
+          column += cell.colSpan;
+        });
+      });
+    }
+
+    document.querySelectorAll('table.ledger-table').forEach(function (table) {
+      label(table);
+      var body = table.querySelector('tbody');
+      if (body) {
+        new MutationObserver(function () {
+          label(table);
+        }).observe(body, { childList: true, subtree: true });
+      }
+    });
+  })();
 
   // Home's side panel (profile and rank, achievements, course progress) sits on
   // Home on wide screens. On phones it moves to the top of the Rank Report page
