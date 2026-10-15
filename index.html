@@ -4252,6 +4252,282 @@ a,
 .stat-grid .stat-card__value {
   color: var(--navy);
 }
+
+/* =========================================================
+   PHONE LAYOUT (900px and narrower)
+   One left edge for everything, nothing wider than the screen,
+   and the menu as a drawer that holds every destination,
+   Account and Log out included.
+========================================================= */
+
+.content__logo {
+  display: none;
+}
+
+/* Grid and flex children may shrink below their content's width,
+   so one wide table can no longer push the whole page sideways. */
+.view-app > .content,
+.content,
+.panel,
+.home-layout > * {
+  min-width: 0;
+}
+
+input[type="file"] {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ticket-tabs {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  /* ---------- drawer ---------- */
+  .view-app .sidebar,
+  .view-app.is-menu-collapsed .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    width: min(84vw, 320px);
+    height: 100dvh;
+    padding: 1.25rem 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.25s var(--ease), visibility 0s linear 0.25s;
+  }
+
+  .view-app.is-drawer-open .sidebar {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.25s var(--ease), visibility 0s;
+    box-shadow: 0 0 0 100vmax rgba(13, 23, 59, 0.55);
+  }
+
+  .view-app.is-drawer-open {
+    overflow: hidden;
+  }
+
+  .sidebar .brand {
+    padding: 0.25rem 0.5rem 1rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .sidebar .brand__text {
+    display: flex;
+  }
+
+  .sidebar__list {
+    flex-direction: column;
+    flex: 1 0 auto;
+  }
+
+  .sidebar__link {
+    padding: 0.8rem 0.9rem;
+    min-height: 44px;
+  }
+
+  .sidebar__link--account {
+    margin-top: 1rem;
+  }
+
+  .sidebar__logout {
+    width: 100%;
+    margin: 0.5rem 0 0;
+    min-height: 44px;
+  }
+
+  /* ---------- top bar: logo, greeting, menu on one line ---------- */
+  .content {
+    padding: 0 1.25rem 2.5rem;
+  }
+
+  .content__header,
+  .content .content__header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 -1.25rem 1.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .content__logo {
+    display: block;
+    flex: none;
+    width: 36px;
+    height: 36px;
+  }
+
+  .content__headings {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content__eyebrow {
+    display: none;
+  }
+
+  .content__header .content__greeting {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .content__header .menu-toggle {
+    order: 2;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+
+  .panel h2 {
+    font-size: 1.35rem;
+  }
+
+  .panel__lead {
+    font-size: 1rem;
+  }
+
+  /* ---------- course learning path: a vertical route ---------- */
+  .mini-flow {
+    padding: 1.25rem;
+  }
+
+  .mini-flow__steps {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .mini-flow__step {
+    position: relative;
+    padding: 0 0 1.1rem 2rem;
+  }
+
+  .mini-flow__step:last-child {
+    padding-bottom: 0;
+  }
+
+  .mini-flow__node {
+    width: auto;
+    align-items: flex-start;
+    gap: 0.15rem;
+    text-align: left;
+  }
+
+  .mini-flow__bubble,
+  .mini-flow__step--next .mini-flow__bubble {
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+  }
+
+  .mini-flow__step--next .mini-flow__bubble {
+    left: -2px;
+  }
+
+  .mini-flow__connector,
+  .mini-flow__connector--done {
+    display: block;
+    position: absolute;
+    left: 8px;
+    top: 22px;
+    width: 2px;
+    height: calc(100% - 22px);
+    margin: 0;
+  }
+
+  /* ---------- topic list ---------- */
+  [id$="browse-topics-list"] .topic-item {
+    padding: 1rem 1rem 1rem 3rem;
+  }
+
+  [id$="browse-topics-list"] .topic-item::before {
+    left: 0.9rem;
+    top: 1.05rem;
+  }
+
+  .topic-item__head {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .topic-item__head .topic-item__title {
+    flex-basis: 100%;
+  }
+
+  .topic-item__head .clear-stamp {
+    margin: 0.1rem 0 0.25rem 0.15rem;
+  }
+
+  .topic-item .home-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ---------- tickets ---------- */
+  .ticket-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .ticket-row__main {
+    flex-basis: 100%;
+  }
+
+  /* ---------- exams ---------- */
+  .exam-row .clear-stamp {
+    margin: 0.25rem 0;
+  }
+
+  /* ---------- next checkpoint ---------- */
+  .next-up {
+    margin-bottom: 1.75rem;
+  }
+
+  /* ---------- tables scroll inside the page, not the page itself ---------- */
+  .panel table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ---------- account: photo above the upload field ---------- */
+  .account-avatar-entry {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-avatar-form {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* ---------- forms: full-width primary actions at thumb size ---------- */
+  .entry__form button[type="submit"],
+  .flip-card__form button[type="submit"] {
+    width: 100%;
+    min-height: 48px;
+  }
+}
 </style>
 </head>
 <body>
@@ -4712,7 +4988,8 @@ a,
 
   <main class="content">
     <header class="content__header">
-      <button type="button" class="menu-toggle" aria-label="Show or hide the menu" aria-expanded="true"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <svg class="content__logo" aria-hidden="true"><use href="#cle-logo"/></svg>
+      <button type="button" class="menu-toggle" aria-label="Menu" aria-expanded="true"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
       <div class="content__headings">
         <p class="content__eyebrow js-today"></p>
         <h1 class="content__greeting" id="user-greeting">Hi, …</h1>
@@ -5020,7 +5297,8 @@ a,
 
   <main class="content">
     <header class="content__header">
-      <button type="button" class="menu-toggle" aria-label="Show or hide the menu" aria-expanded="true"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <svg class="content__logo" aria-hidden="true"><use href="#cle-logo"/></svg>
+      <button type="button" class="menu-toggle" aria-label="Menu" aria-expanded="true"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
       <div class="content__headings">
         <p class="content__eyebrow js-today"></p>
         <h1 class="content__greeting" id="admin-greeting">Hi, …</h1>
@@ -11127,6 +11405,8 @@ a,
      SIDEBAR
   ======================================================== */
 
+  var PHONE_LAYOUT = window.matchMedia('(max-width: 900px)');
+
   function wireSidebar(containerId) {
     var container = document.getElementById(containerId);
     var links = container.querySelectorAll('.sidebar__link');
@@ -11134,17 +11414,70 @@ a,
     var currentPanelId = null;
     var menuToggle = container.querySelector('.menu-toggle');
 
+    var sidebar = container.querySelector('.sidebar');
+
+    function isPhone() {
+      return PHONE_LAYOUT.matches;
+    }
+
     function setMenuCollapsed(collapsed) {
       container.classList.toggle('is-menu-collapsed', collapsed);
-      if (menuToggle) {
+      if (menuToggle && !isPhone()) {
         menuToggle.setAttribute('aria-expanded', String(!collapsed));
+      }
+    }
+
+    // On phones the menu is a drawer that slides in over the page; on wider
+    // screens the same button shows or hides the menu column.
+    function setDrawerOpen(open) {
+      container.classList.toggle('is-drawer-open', open);
+      if (menuToggle) {
+        menuToggle.setAttribute('aria-expanded', String(open));
+      }
+      if (open) {
+        var first = sidebar.querySelector('.sidebar__link.is-active') || sidebar.querySelector('.sidebar__link');
+        if (first) {
+          first.focus();
+        }
       }
     }
 
     if (menuToggle) {
       menuToggle.addEventListener('click', function () {
-        setMenuCollapsed(!container.classList.contains('is-menu-collapsed'));
+        if (isPhone()) {
+          setDrawerOpen(!container.classList.contains('is-drawer-open'));
+        } else {
+          setMenuCollapsed(!container.classList.contains('is-menu-collapsed'));
+        }
       });
+    }
+
+    container.addEventListener('click', function (e) {
+      if (!container.classList.contains('is-drawer-open')) {
+        return;
+      }
+      // a link or button in the drawer was used, or the dimmed page behind it was tapped
+      if (e.target.closest('.sidebar__link, .sidebar__logout') || (!sidebar.contains(e.target) && !menuToggle.contains(e.target))) {
+        setDrawerOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && container.classList.contains('is-drawer-open')) {
+        setDrawerOpen(false);
+        menuToggle.focus();
+      }
+    });
+
+    PHONE_LAYOUT.addEventListener('change', function () {
+      setDrawerOpen(false);
+      if (menuToggle) {
+        menuToggle.setAttribute('aria-expanded', String(!isPhone() && !container.classList.contains('is-menu-collapsed')));
+      }
+    });
+
+    if (menuToggle && isPhone()) {
+      menuToggle.setAttribute('aria-expanded', 'false');
     }
 
     panels.forEach(function (panel) {
