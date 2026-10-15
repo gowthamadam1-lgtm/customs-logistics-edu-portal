@@ -3621,6 +3621,21 @@ p,
     justify-content: center;
   }
 }
+
+/* In-page viewer: photos, documents and KPI files open here instead of a new tab */
+.doc-viewer { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; background: var(--navy); color: var(--white); }
+.doc-viewer[hidden] { display: none; }
+.doc-viewer__bar { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--navy-line); }
+.doc-viewer__title { flex: 1; min-width: 0; margin: 0; font-family: var(--font-display); font-size: 1rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-viewer__btn { display: inline-flex; align-items: center; padding: 0.5rem 0.9rem; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: var(--radius); background: transparent; color: var(--white); font: inherit; font-size: 0.9rem; text-decoration: none; cursor: pointer; }
+.doc-viewer__btn:hover, .doc-viewer__btn:focus-visible { border-color: var(--steel); background: var(--navy-line); }
+.doc-viewer__btn--primary { border-color: var(--steel); background: var(--steel); color: var(--navy); font-weight: 600; }
+.doc-viewer__btn--primary:hover, .doc-viewer__btn--primary:focus-visible { background: var(--white); border-color: var(--white); }
+.doc-viewer__body { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.doc-viewer__frame { width: 100%; height: 100%; border: 0; background: var(--white); }
+.doc-viewer__image { max-width: 100%; max-height: 100%; object-fit: contain; padding: 1rem; }
+.doc-viewer__status { margin: 0; padding: 1rem; text-align: center; }
+body.has-viewer { overflow: hidden; }
 </style>
 </head>
 <body>
@@ -4067,15 +4082,15 @@ p,
     <div class="brand brand--light"><svg class="brand__logo" aria-hidden="true"><use href="#cle-logo"/></svg><span class="brand__text"><strong>CLE Portal</strong><span>Customs &amp; Logistics Edu</span></span></div>
 
     <ul class="sidebar__list">
-      <li><a href="#home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
-      <li><a href="#help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
-      <li><a href="#exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
-      <li><a href="#discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
-      <li><a href="#other-courses" class="sidebar__link" data-section="other-courses" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
-      <li><a href="#kpi-report" class="sidebar__link" data-section="kpi-report"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Update KPI Report</span></a></li>
+      <li><a href="#/home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
+      <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
+      <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
+      <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
+      <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
+      <li><a href="#/kpi-report" class="sidebar__link" data-section="kpi-report"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Update KPI Report</span></a></li>
     </ul>
 
-    <a href="#account" class="sidebar__link sidebar__link--account sidebar__user" id="sidebar-user" data-section="account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a>
+    <a href="#/account" class="sidebar__link sidebar__link--account sidebar__user" id="sidebar-user" data-section="account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a>
     <button class="sidebar__logout" id="user-logout-btn" type="button"><svg class="ico" aria-hidden="true"><use href="#i-logout"/></svg><span>Log out</span></button>
   </nav>
 
@@ -4354,13 +4369,13 @@ p,
     <div class="brand brand--light"><svg class="brand__logo" aria-hidden="true"><use href="#cle-logo"/></svg><span class="brand__text"><strong>CLE Portal<em class="brand__tag">Admin</em></strong><span>Administration</span></span></div>
 
     <ul class="sidebar__list">
-      <li><a href="#overview" class="sidebar__link is-active" data-section="overview"><svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg><span>Overview</span></a></li>
-      <li><a href="#approvals" class="sidebar__link" data-section="approvals"><svg class="ico" aria-hidden="true"><use href="#i-usercheck"/></svg><span>Approvals</span></a></li>
-      <li><a href="#learners" class="sidebar__link" data-section="learners"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg><span>Learners</span></a></li>
-      <li><a href="#kpi-review" class="sidebar__link" data-section="kpi-review"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Learners&#39; KPI</span></a></li>
-      <li><a href="#tickets" class="sidebar__link" data-section="tickets"><svg class="ico" aria-hidden="true"><use href="#i-lifebuoy"/></svg><span>Support Tickets</span><span class="nav-badge" id="nav-badge-tickets" hidden></span></a></li>
-      <li><a href="#topics" class="sidebar__link" data-section="topics" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg><span>Topics</span></a></li>
-      <li><a href="#admin-account" class="sidebar__link" data-section="admin-account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a></li>
+      <li><a href="#/admin/overview" class="sidebar__link is-active" data-section="overview"><svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg><span>Overview</span></a></li>
+      <li><a href="#/admin/approvals" class="sidebar__link" data-section="approvals"><svg class="ico" aria-hidden="true"><use href="#i-usercheck"/></svg><span>Approvals</span></a></li>
+      <li><a href="#/admin/learners" class="sidebar__link" data-section="learners"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg><span>Learners</span></a></li>
+      <li><a href="#/admin/kpi-review" class="sidebar__link" data-section="kpi-review"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Learners&#39; KPI</span></a></li>
+      <li><a href="#/admin/tickets" class="sidebar__link" data-section="tickets"><svg class="ico" aria-hidden="true"><use href="#i-lifebuoy"/></svg><span>Support Tickets</span><span class="nav-badge" id="nav-badge-tickets" hidden></span></a></li>
+      <li><a href="#/admin/topics" class="sidebar__link" data-section="topics" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg><span>Topics</span></a></li>
+      <li><a href="#/admin/admin-account" class="sidebar__link" data-section="admin-account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a></li>
     </ul>
 
     <button class="sidebar__logout" id="admin-logout-btn" type="button"><svg class="ico" aria-hidden="true"><use href="#i-logout"/></svg><span>Log out</span></button>
@@ -4699,6 +4714,15 @@ p,
       <div id="cp-quiz-result"></div>
     </div>
   </main>
+</div>
+
+<div class="doc-viewer" id="doc-viewer" role="dialog" aria-modal="true" aria-labelledby="doc-viewer-title" hidden>
+  <div class="doc-viewer__bar">
+    <h2 class="doc-viewer__title" id="doc-viewer-title"></h2>
+    <a class="doc-viewer__btn" id="doc-viewer-download" href="#" download hidden>Download</a>
+    <button type="button" class="doc-viewer__btn doc-viewer__btn--primary" id="doc-viewer-close">Close</button>
+  </div>
+  <div class="doc-viewer__body" id="doc-viewer-body"></div>
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -7311,7 +7335,7 @@ p,
             form.password.value = '';
 
             if (expectedRole === 'admin') {
-              enterAdmin(profile);
+              routeAdmin(profile);
             } else {
               routeLearner(profile);
             }
@@ -7413,41 +7437,76 @@ p,
     coursePageBrowser.openCourseById(route.courseId, route);
   }
 
+  /* ========================================================
+     PAGE ROUTES
+     Every page has its own address in the same tab:
+       #/home, #/exams, #/discussions ...        learner pages
+       #/admin/overview, #/admin/learners ...    admin pages
+       #course=<id>&topic=<id>&view=quiz         a course page
+     so the browser's Back/Forward buttons, refresh and bookmarks work.
+  ======================================================== */
+
+  var LEARNER_HOME_ROUTE = '#/home';
+  var ADMIN_HOME_ROUTE = '#/admin/overview';
+  var lastDashboardRoute = LEARNER_HOME_ROUTE;
+
+  function routeSection(prefix) {
+    var match = new RegExp('^#/' + prefix + '([a-z-]+)$').exec(window.location.hash);
+    return match ? match[1] : null;
+  }
+
+  // Swaps the address without adding a history entry (used for defaults and clean-ups).
+  function replaceRoute(hash) {
+    if (window.location.hash !== hash) {
+      history.replaceState(history.state, '', hash || window.location.pathname + window.location.search);
+    }
+  }
+
+  function routeAdmin(profile) {
+    if (currentViewName !== 'admin') {
+      enterAdmin(profile);
+    }
+    if (!adminSidebar.showPanel(routeSection('admin/'))) {
+      replaceRoute(ADMIN_HOME_ROUTE);
+      adminSidebar.showPanel('overview');
+    }
+  }
+
   function routeLearner(profile) {
     var route = parseCourseRoute();
 
     if (route) {
       enterCoursePage(profile, route);
-    } else {
-      enterDashboard(profile);
-    }
-  }
-
-  window.addEventListener('hashchange', function () {
-    if (!currentProfile || currentProfile.role === 'admin') {
       return;
     }
 
-    var route = parseCourseRoute();
-
-    if (route) {
-      enterCoursePage(currentProfile, route);
-    } else if (currentViewName === 'course') {
-      enterDashboard(currentProfile);
+    if (currentViewName !== 'dashboard') {
+      enterDashboard(profile);
     }
-  });
+    if (!learnerSidebar.showPanel(routeSection(''))) {
+      replaceRoute(LEARNER_HOME_ROUTE);
+      learnerSidebar.showPanel('home');
+    }
+    lastDashboardRoute = window.location.hash;
+  }
+
+  function applyRoute() {
+    closeViewer(true);
+
+    if (!currentProfile) {
+      return;
+    }
+    if (currentProfile.role === 'admin') {
+      routeAdmin(currentProfile);
+    } else {
+      routeLearner(currentProfile);
+    }
+  }
+
+  window.addEventListener('hashchange', applyRoute);
 
   document.getElementById('course-page-close').addEventListener('click', function () {
-    if (window.opener && !window.opener.closed) {
-      window.close();
-    }
-
-    // still here means this tab could not close itself, so go back to the portal in place
-    window.setTimeout(function () {
-      if (window.location.hash) {
-        window.location.hash = '';
-      }
-    }, 150);
+    window.location.hash = lastDashboardRoute;
   });
 
   // Coming back to the portal tab after finishing a quiz elsewhere: refresh what may have changed.
@@ -7463,6 +7522,110 @@ p,
       loadExams();
     }
   });
+
+  /* ========================================================
+     IN-PAGE VIEWER
+     Photos, documents and KPI files open full screen in this tab.
+     Opening it adds a history entry, so the browser's Back button
+     (or Esc, or Close) returns to the page you were on.
+  ======================================================== */
+
+  var viewerEl = document.getElementById('doc-viewer');
+  var viewerBody = document.getElementById('doc-viewer-body');
+  var viewerTitle = document.getElementById('doc-viewer-title');
+  var viewerDownload = document.getElementById('doc-viewer-download');
+  var viewerReturnFocus = null;
+
+  function viewerHasHistoryEntry() {
+    return !!(history.state && history.state.docViewer);
+  }
+
+  // opts: { title, src, kind: 'image' | 'frame' | 'loading', downloadUrl, fileName }
+  function openViewer(opts) {
+    if (viewerEl.hidden) {
+      viewerReturnFocus = document.activeElement;
+      history.pushState({ docViewer: true }, '', window.location.href);
+    }
+
+    viewerTitle.textContent = opts.title || 'File';
+    viewerBody.innerHTML = '';
+
+    if (opts.kind === 'image') {
+      var image = document.createElement('img');
+      image.className = 'doc-viewer__image';
+      image.src = opts.src;
+      image.alt = opts.title || '';
+      viewerBody.appendChild(image);
+    } else if (opts.kind === 'frame') {
+      var frame = document.createElement('iframe');
+      frame.className = 'doc-viewer__frame';
+      frame.title = opts.title || 'File';
+      frame.setAttribute('allowfullscreen', '');
+      frame.src = opts.src;
+      viewerBody.appendChild(frame);
+    } else {
+      var status = document.createElement('p');
+      status.className = 'doc-viewer__status';
+      status.textContent = 'Loading…';
+      viewerBody.appendChild(status);
+    }
+
+    if (opts.downloadUrl) {
+      viewerDownload.href = opts.downloadUrl;
+      viewerDownload.setAttribute('download', opts.fileName || '');
+      viewerDownload.hidden = false;
+    } else {
+      viewerDownload.hidden = true;
+    }
+
+    viewerEl.hidden = false;
+    document.body.classList.add('has-viewer');
+    document.getElementById('doc-viewer-close').focus();
+  }
+
+  // fromHistory: the history entry is already gone (Back button or a route change).
+  function closeViewer(fromHistory) {
+    if (viewerEl.hidden) {
+      return;
+    }
+    if (!fromHistory && viewerHasHistoryEntry()) {
+      history.back(); // the popstate handler below finishes closing
+      return;
+    }
+
+    viewerEl.hidden = true;
+    viewerBody.innerHTML = '';
+    document.body.classList.remove('has-viewer');
+
+    if (viewerReturnFocus && document.body.contains(viewerReturnFocus)) {
+      viewerReturnFocus.focus();
+    }
+    viewerReturnFocus = null;
+  }
+
+  function viewerIsOpen() {
+    return !viewerEl.hidden;
+  }
+
+  window.addEventListener('popstate', function () {
+    if (!viewerHasHistoryEntry()) {
+      closeViewer(true);
+    }
+  });
+
+  document.getElementById('doc-viewer-close').addEventListener('click', function () {
+    closeViewer(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && viewerIsOpen()) {
+      closeViewer(false);
+    }
+  });
+
+  function officeViewerUrl(fileUrl) {
+    return 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
+  }
 
   /* ========================================================
      LEARNING MATERIAL VIEWER (documents, videos, photos)
@@ -7508,8 +7671,10 @@ p,
     if (item.kind === 'image') {
       var imageLink = document.createElement('a');
       imageLink.href = url;
-      imageLink.target = '_blank';
-      imageLink.rel = 'noopener noreferrer';
+      imageLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        openViewer({ title: item.title || item.file_name, src: url, kind: 'image', downloadUrl: url, fileName: item.file_name });
+      });
 
       var image = document.createElement('img');
       image.className = 'material-item__image';
@@ -7545,9 +7710,23 @@ p,
 
     var openLink = document.createElement('a');
     openLink.href = url;
-    openLink.target = '_blank';
-    openLink.rel = 'noopener noreferrer';
-    openLink.textContent = item.kind === 'document' ? 'Open in a new tab' : 'Open in a new tab';
+    openLink.textContent = 'View full screen';
+    openLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (item.kind === 'image') {
+        openViewer({ title: item.title || item.file_name, src: url, kind: 'image', downloadUrl: url, fileName: item.file_name });
+      } else if (item.kind === 'video') {
+        openViewer({ title: item.title || item.file_name, src: url, kind: 'frame', downloadUrl: url, fileName: item.file_name });
+      } else {
+        openViewer({
+          title: item.title || item.file_name,
+          src: extension === 'pdf' ? url : officeViewerUrl(url),
+          kind: 'frame',
+          downloadUrl: url,
+          fileName: item.file_name
+        });
+      }
+    });
     note.appendChild(openLink);
 
     note.appendChild(document.createTextNode(' or '));
@@ -7994,28 +8173,30 @@ p,
   }
 
   function kpiPreview(path, fileName) {
-    // opened straight from the click so the browser lets it through, then pointed at the viewer
-    var win = window.open('', '_blank');
+    openViewer({ title: fileName, kind: 'loading' });
 
     sb.storage
       .from(KPI_BUCKET)
       .createSignedUrl(path, 3600)
       .then(function (res) {
 
+        if (!viewerIsOpen()) {
+          return; // closed while the link was being prepared
+        }
+
         if (res.error || !res.data) {
-          if (win) {
-            win.close();
-          }
+          closeViewer(false);
           alert('Could not open the preview' + (res.error ? ': ' + res.error.message : '.'));
           return;
         }
 
-        if (!win) {
-          kpiDownload(path, fileName);
-          return;
-        }
-
-        win.location.href = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(res.data.signedUrl);
+        openViewer({
+          title: fileName,
+          src: officeViewerUrl(res.data.signedUrl),
+          kind: 'frame',
+          downloadUrl: res.data.signedUrl,
+          fileName: fileName
+        });
       });
   }
 
@@ -10141,83 +10322,105 @@ p,
       }
     });
 
+    // Each sidebar link is a real page route (#/exams, #/admin/learners, ...). Clicking it only
+    // changes the address; the router below then calls showPanel, so Back/Forward, refresh and
+    // bookmarks all land on the same page.
+    function showPanel(target) {
+      var link = null;
+
+      links.forEach(function (item) {
+        if (item.getAttribute('data-section') === target) {
+          link = item;
+        }
+      });
+
+      if (!link) {
+        return false;
+      }
+
+      // Course pages close the menu so they open full width; every other page brings it back.
+      setMenuCollapsed(link.hasAttribute('data-fullscreen'));
+
+      if (target === currentPanelId) {
+        return true;
+      }
+
+      links.forEach(function (item) {
+        item.classList.remove('is-active');
+      });
+      link.classList.add('is-active');
+
+      var prevPanel = null;
+      var nextPanel = null;
+
+      panels.forEach(function (panel) {
+        if (panel.id === currentPanelId) {
+          prevPanel = panel;
+        }
+        if (panel.id === target) {
+          nextPanel = panel;
+        }
+      });
+
+      currentPanelId = target;
+
+      if (containerId === 'view-admin') {
+        if (target === 'overview') {
+          loadOverview();
+        }
+        if (target === 'approvals') {
+          loadPendingApprovals();
+        }
+        if (target === 'learners') {
+          loadLearners();
+        }
+        if (target === 'topics') {
+          showCoursesLevel();
+        }
+        if (target === 'kpi-review') {
+          loadKpiReview();
+        }
+        if (target === 'tickets') {
+          showAdminTicketList();
+          loadAdminTickets();
+        }
+      }
+
+      if (containerId === 'view-dashboard') {
+        if (target === 'other-courses') {
+          ensureOtherCoursesLoaded();
+        }
+        if (target === 'exams') {
+          loadExams();
+        }
+        if (target === 'kpi-report') {
+          loadMyKpi();
+        }
+        if (target === 'discussions') {
+          loadTicketTopicOptions();
+          showTicketsList();
+          loadMyTickets();
+        }
+      }
+
+      fadeSwapPanel(prevPanel, nextPanel);
+      return true;
+    }
+
+    // Clicking the page you are already on doesn't change the address, so handle it here.
     links.forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        // Course pages close the menu so they open full width; every other page brings it back.
-        setMenuCollapsed(link.hasAttribute('data-fullscreen'));
-
-        var target = link.getAttribute('data-section');
-        if (target === currentPanelId) {
-          return;
+      link.addEventListener('click', function () {
+        if (link.getAttribute('href') === window.location.hash) {
+          showPanel(link.getAttribute('data-section'));
         }
-
-        links.forEach(function (item) {
-          item.classList.remove('is-active');
-        });
-        link.classList.add('is-active');
-
-        var prevPanel = null;
-        var nextPanel = null;
-
-        panels.forEach(function (panel) {
-          if (panel.id === currentPanelId) {
-            prevPanel = panel;
-          }
-          if (panel.id === target) {
-            nextPanel = panel;
-          }
-        });
-
-        currentPanelId = target;
-
-        if (containerId === 'view-admin') {
-          if (target === 'overview') {
-            loadOverview();
-          }
-          if (target === 'approvals') {
-            loadPendingApprovals();
-          }
-          if (target === 'learners') {
-            loadLearners();
-          }
-          if (target === 'topics') {
-            showCoursesLevel();
-          }
-          if (target === 'kpi-review') {
-            loadKpiReview();
-          }
-          if (target === 'tickets') {
-            showAdminTicketList();
-            loadAdminTickets();
-          }
-        }
-
-        if (containerId === 'view-dashboard') {
-          if (target === 'other-courses') {
-            ensureOtherCoursesLoaded();
-          }
-          if (target === 'exams') {
-            loadExams();
-          }
-          if (target === 'kpi-report') {
-            loadMyKpi();
-          }
-          if (target === 'discussions') {
-            loadTicketTopicOptions();
-            showTicketsList();
-            loadMyTickets();
-          }
-        }
-
-        fadeSwapPanel(prevPanel, nextPanel);
       });
     });
+
+    return { showPanel: showPanel };
   }
 
-  wireSidebar('view-dashboard');
-  wireSidebar('view-admin');
+  var learnerSidebar = wireSidebar('view-dashboard');
+  var adminSidebar = wireSidebar('view-admin');
 
   wireAccountForms('view-dashboard', function () {
     return currentProfile;
@@ -10239,6 +10442,7 @@ p,
   document.getElementById('user-logout-btn').addEventListener('click', function () {
     sb.auth.signOut().then(function () {
       currentProfile = null;
+      replaceRoute('');
       showView('landing');
     });
   });
@@ -10246,6 +10450,7 @@ p,
   document.getElementById('admin-logout-btn').addEventListener('click', function () {
     sb.auth.signOut().then(function () {
       currentProfile = null;
+      replaceRoute('');
       showView('landing');
     });
   });
@@ -10270,7 +10475,7 @@ p,
       }
 
       if (profile.role === 'admin') {
-        enterAdmin(profile);
+        routeAdmin(profile);
       } else {
         routeLearner(profile);
       }
