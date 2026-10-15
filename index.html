@@ -3636,6 +3636,20 @@ p,
 .doc-viewer__image { max-width: 100%; max-height: 100%; object-fit: contain; padding: 1rem; }
 .doc-viewer__status { margin: 0; padding: 1rem; text-align: center; }
 body.has-viewer { overflow: hidden; }
+
+/* Discussions: "My tickets" on top, then the "Raise a Question or Ticket" dropdown */
+.ticket-section__title { margin: 0 0 0.75rem; font-family: var(--font-display); font-size: 1.05rem; color: var(--navy); }
+.my-tickets .entry__success:empty { display: none; }
+.ticket-raise { background: var(--white); border: 1px solid var(--paper-line); border-radius: var(--r-card); box-shadow: var(--shadow-sm); }
+.ticket-raise[open] { border-color: rgba(59, 154, 225, 0.6); }
+.ticket-raise__summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; padding: 1rem 3rem 1rem 1.25rem; position: relative; list-style: none; cursor: pointer; border-radius: var(--r-card); }
+.ticket-raise__summary::-webkit-details-marker { display: none; }
+.ticket-raise__summary::after { content: ''; position: absolute; right: 1.25rem; top: 50%; width: 0.55rem; height: 0.55rem; border-right: 2px solid var(--steel); border-bottom: 2px solid var(--steel); transform: translateY(-70%) rotate(45deg); transition: transform 0.2s var(--ease); }
+.ticket-raise[open] > .ticket-raise__summary::after { transform: translateY(-30%) rotate(-135deg); }
+.ticket-raise__summary:hover, .ticket-raise__summary:focus-visible { background: var(--paper); }
+.ticket-raise__label { font-family: var(--font-display); font-weight: 600; color: var(--navy); }
+.ticket-raise__hint { font-size: 0.875rem; color: var(--ink); opacity: 0.75; }
+.ticket-raise__body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--paper-line); padding-top: 1rem; }
 </style>
 </head>
 <body>
@@ -4201,8 +4215,19 @@ body.has-viewer { overflow: hidden; }
       <p class="panel__lead">Ask staff a question or report a problem. Discussions are visible to everyone in the portal unless you mark yours private. When staff reply to your ticket, a badge appears on the Discussions menu.</p>
 
       <div id="tickets-list-view">
-        <div class="entry entry--form mb-lg">
-          <form class="entry__form" id="ticket-form">
+        <section class="my-tickets mb-lg" aria-labelledby="my-tickets-title">
+          <h3 class="ticket-section__title" id="my-tickets-title">My tickets</h3>
+          <p class="entry__success" id="ticket-form-success" role="status"></p>
+          <div id="my-tickets-list"><div class="skeleton-card" aria-hidden="true"></div></div>
+        </section>
+
+        <details class="ticket-raise mb-lg" id="ticket-raise">
+          <summary class="ticket-raise__summary">
+            <span class="ticket-raise__label">Raise a Question or Ticket</span>
+            <span class="ticket-raise__hint">Ask staff a question or report a problem</span>
+          </summary>
+          <div class="ticket-raise__body">
+          <form class="entry__form entry--form" id="ticket-form">
             <label>What do you need?
               <select name="category">
                 <option value="question">Question for staff</option>
@@ -4233,13 +4258,14 @@ body.has-viewer { overflow: hidden; }
               <span>Keep this private. Only you and staff will see it.</span>
             </label>
             <p class="entry__error" id="ticket-form-error" role="alert"></p>
-            <p class="entry__success" id="ticket-form-success" role="status"></p>
             <div class="button-row">
               <button type="submit" id="ticket-form-submit">Send to staff</button>
             </div>
           </form>
-        </div>
+          </div>
+        </details>
 
+        <h3 class="ticket-section__title">All discussions</h3>
         <div class="ticket-head">
           <div class="ticket-tabs ticket-tabs--scope" id="ticket-scope"></div>
           <div class="ticket-tabs" id="ticket-tabs"></div>
@@ -9457,6 +9483,8 @@ body.has-viewer { overflow: hidden; }
   function renderMyTickets() {
     var root = document.getElementById('tickets-list');
 
+    renderOwnTicketsSummary();
+
     var mineCount = myTickets.filter(function (ticket) {
       return ticket.user_id === currentProfile.id;
     }).length;
@@ -9505,63 +9533,99 @@ body.has-viewer { overflow: hidden; }
       empty.className = 'home-btn-note';
       empty.textContent = scoped.length === 0
         ? (ticketScope === 'mine'
-          ? 'You have no tickets yet. Use the form above to ask staff a question or report a problem.'
-          : 'No discussions yet. Start the first one with the form above.')
+          ? 'You have no tickets yet. Use "Raise a Question or Ticket" above to ask staff.'
+          : 'No discussions yet. Start the first one with "Raise a Question or Ticket" above.')
         : 'No tickets in this view.';
       root.appendChild(empty);
       return;
     }
 
     rows.forEach(function (ticket) {
-      var row = document.createElement('button');
-      row.type = 'button';
-      var isMine = ticket.user_id === currentProfile.id;
-      var unread = isMine && isUnseenBy(ticket, 'user');
-      row.className = 'ticket-row' + (unread ? ' ticket-row--unread' : '');
+      root.appendChild(buildMyTicketRow(ticket));
+    });
+  }
 
-      var main = document.createElement('span');
-      main.className = 'ticket-row__main';
+  function buildMyTicketRow(ticket) {
+    var row = document.createElement('button');
+    row.type = 'button';
+    var isMine = ticket.user_id === currentProfile.id;
+    var unread = isMine && isUnseenBy(ticket, 'user');
+    row.className = 'ticket-row' + (unread ? ' ticket-row--unread' : '');
 
-      var subject = document.createElement('span');
-      subject.className = 'ticket-row__subject';
-      subject.textContent = ticket.subject;
+    var main = document.createElement('span');
+    main.className = 'ticket-row__main';
 
-      var meta = document.createElement('span');
-      meta.className = 'ticket-row__meta';
-      var metaParts = ['#' + ticket.ticket_no];
-      metaParts.push(isMine ? 'You' : (ticketPeople[ticket.user_id] || 'A learner'));
-      metaParts.push(TICKET_CATEGORIES[ticket.category] || ticket.category);
-      if (ticket.assigned_to) {
-        metaParts.push('Assigned to ' + (ticketPeople[ticket.assigned_to] || 'staff'));
+    var subject = document.createElement('span');
+    subject.className = 'ticket-row__subject';
+    subject.textContent = ticket.subject;
+
+    var meta = document.createElement('span');
+    meta.className = 'ticket-row__meta';
+    var metaParts = ['#' + ticket.ticket_no];
+    metaParts.push(isMine ? 'You' : (ticketPeople[ticket.user_id] || 'A learner'));
+    metaParts.push(TICKET_CATEGORIES[ticket.category] || ticket.category);
+    if (ticket.assigned_to) {
+      metaParts.push('Assigned to ' + (ticketPeople[ticket.assigned_to] || 'staff'));
+    }
+    metaParts.push('Updated ' + fmtDateTime(ticket.last_message_at));
+    meta.textContent = metaParts.join('. ');
+
+    main.appendChild(subject);
+    main.appendChild(meta);
+    row.appendChild(main);
+
+    if (ticket.is_private) {
+      var lock = document.createElement('span');
+      lock.className = 'ticket-chip ticket-chip--private';
+      lock.textContent = 'Private';
+      row.appendChild(lock);
+    }
+
+    if (unread) {
+      var fresh = document.createElement('span');
+      fresh.className = 'ticket-chip ticket-chip--new';
+      fresh.textContent = 'New reply';
+      row.appendChild(fresh);
+    }
+
+    row.appendChild(ticketChip(ticket.status, 'user'));
+
+    row.addEventListener('click', function () {
+      openMyTicket(ticket.id);
+    });
+
+    return row;
+  }
+
+  // "My tickets" at the top of Discussions: unread replies first, then most recently updated.
+  function renderOwnTicketsSummary() {
+    var root = document.getElementById('my-tickets-list');
+    var raise = document.getElementById('ticket-raise');
+
+    var mine = myTickets.filter(function (ticket) {
+      return ticket.user_id === currentProfile.id;
+    }).sort(function (x, y) {
+      var unreadX = isUnseenBy(x, 'user') ? 1 : 0;
+      var unreadY = isUnseenBy(y, 'user') ? 1 : 0;
+      if (unreadX !== unreadY) {
+        return unreadY - unreadX;
       }
-      metaParts.push('Updated ' + fmtDateTime(ticket.last_message_at));
-      meta.textContent = metaParts.join('. ');
+      return new Date(y.last_message_at) - new Date(x.last_message_at);
+    });
 
-      main.appendChild(subject);
-      main.appendChild(meta);
-      row.appendChild(main);
+    root.innerHTML = '';
 
-      if (ticket.is_private) {
-        var lock = document.createElement('span');
-        lock.className = 'ticket-chip ticket-chip--private';
-        lock.textContent = 'Private';
-        row.appendChild(lock);
-      }
+    if (mine.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'home-btn-note';
+      empty.textContent = 'You have no tickets yet. Use "Raise a Question or Ticket" below to ask staff.';
+      root.appendChild(empty);
+      raise.open = true;
+      return;
+    }
 
-      if (unread) {
-        var fresh = document.createElement('span');
-        fresh.className = 'ticket-chip ticket-chip--new';
-        fresh.textContent = 'New reply';
-        row.appendChild(fresh);
-      }
-
-      row.appendChild(ticketChip(ticket.status, 'user'));
-
-      row.addEventListener('click', function () {
-        openMyTicket(ticket.id);
-      });
-
-      root.appendChild(row);
+    mine.forEach(function (ticket) {
+      root.appendChild(buildMyTicketRow(ticket));
     });
   }
 
@@ -9690,9 +9754,8 @@ body.has-viewer { overflow: hidden; }
       }
 
       form.reset();
+      document.getElementById('ticket-raise').open = false;
       successEl.textContent = 'Ticket #' + res.data.ticket_no + ' sent. Staff will reply here.';
-      myTicketFilter = 'all';
-      ticketScope = 'mine';
       loadMyTickets();
     });
   });
