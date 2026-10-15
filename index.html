@@ -41,6 +41,9 @@
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://ybmlicailkivohjzinay.supabase.co" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Libre+Franklin:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -3636,6 +3639,619 @@ p,
 .doc-viewer__image { max-width: 100%; max-height: 100%; object-fit: contain; padding: 1rem; }
 .doc-viewer__status { margin: 0; padding: 1rem; text-align: center; }
 body.has-viewer { overflow: hidden; }
+
+/* Discussions: "My tickets" on top, then the "Raise a Question or Ticket" dropdown */
+.ticket-section__title { margin: 0 0 0.75rem; font-family: var(--font-display); font-size: 1.05rem; color: var(--navy); }
+.my-tickets .entry__success:empty { display: none; }
+.ticket-raise { background: var(--white); border: 1px solid var(--paper-line); border-radius: var(--r-card); box-shadow: var(--shadow-sm); }
+.ticket-raise[open] { border-color: rgba(59, 154, 225, 0.6); }
+.ticket-raise__summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; padding: 1rem 3rem 1rem 1.25rem; position: relative; list-style: none; cursor: pointer; border-radius: var(--r-card); }
+.ticket-raise__summary::-webkit-details-marker { display: none; }
+.ticket-raise__summary::after { content: ''; position: absolute; right: 1.25rem; top: 50%; width: 0.55rem; height: 0.55rem; border-right: 2px solid var(--steel); border-bottom: 2px solid var(--steel); transform: translateY(-70%) rotate(45deg); transition: transform 0.2s var(--ease); }
+.ticket-raise[open] > .ticket-raise__summary::after { transform: translateY(-30%) rotate(-135deg); }
+.ticket-raise__summary:hover, .ticket-raise__summary:focus-visible { background: var(--paper); }
+.ticket-raise__label { font-family: var(--font-display); font-weight: 600; color: var(--navy); }
+.ticket-raise__hint { font-size: 0.875rem; color: var(--ink); opacity: 0.75; }
+.ticket-raise__body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--paper-line); padding-top: 1rem; }
+
+/* =========================================================
+   CUSTOMS CLEARANCE — design layer (loaded last, overrides above)
+   Idea: learning customs is a shipment passing checkpoints. Everything
+   stays quiet and paper-like; the one bold element is the inked
+   "Cleared" stamp, which only finished work receives.
+   Palette: harbour navy #0D173B, manifest paper #F3F7FC,
+   signal blue #3B9AE1 (lines, accents) / #1F6CB0 (text),
+   cargo amber #F1C40F (the single "do this next"), stamp red #B4432C.
+========================================================= */
+
+:root {
+  --signal-ink: #1F6CB0;
+  --muted: #4A5A70;
+  --stamp: #B4432C;
+  --rule: #D9E7F5;
+}
+
+/* ---------- readable text: deeper blue on light backgrounds ---------- */
+a,
+.btn-secondary,
+.content__eyebrow,
+.download-card__text span,
+.drill-back,
+.entry__form label,
+.entry__hint,
+.exam-row__meta,
+.flip-card__foot,
+.flip-card__form label,
+.flip-card__hint,
+.home-btn-note,
+.home-rank__hint,
+.kpi-card__meta,
+.kpi-table__sub,
+.ledger-table__btn,
+.material-list__empty,
+.material-list__size,
+.material-manager__hint,
+.material-manager__status,
+.material-note,
+.mini-flow__marks,
+.profile-card__meta,
+.rank-list__empty,
+.rank-list__loading,
+.rank-list__rank,
+.stat span,
+.stat-card__value,
+.thread__meta,
+.thread__reply label,
+.thread__who,
+.ticket-row__meta,
+.topic-item__empty,
+.portal-toggle__btn {
+  color: var(--signal-ink);
+}
+
+.home-rank__hint,
+.ticket-row__meta,
+.exam-row__meta,
+.thread__meta,
+.profile-card__meta,
+.rank-list__empty,
+.material-note,
+.home-btn-note {
+  color: var(--muted);
+}
+
+.sidebar a,
+.login-shell .flip-card__foot a {
+  color: inherit;
+}
+
+/* ---------- the stamp ---------- */
+.clear-stamp {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+  gap: 0.05rem;
+  padding: 0.28rem 0.6rem 0.24rem;
+  color: var(--stamp);
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  transform: rotate(-5deg);
+  font-family: var(--font-display);
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(circle at 30% 40%, #000 55%, rgba(0, 0, 0, 0.78) 100%);
+          mask-image: radial-gradient(circle at 30% 40%, #000 55%, rgba(0, 0, 0, 0.78) 100%);
+}
+
+.clear-stamp__word {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase; /* stamps are lettered in capitals; this is the only all-caps text */
+}
+
+.clear-stamp__date {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+/* A stamp lands once, when its list first appears; never loops. */
+@keyframes stamp-land {
+  0% { opacity: 0; transform: rotate(-5deg) scale(1.35); }
+  60% { opacity: 0.95; transform: rotate(-5deg) scale(0.96); }
+  100% { opacity: 0.9; transform: rotate(-5deg) scale(1); }
+}
+
+.panel.is-active .clear-stamp,
+.course-page .clear-stamp {
+  animation: stamp-land 0.42s var(--ease) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel.is-active .clear-stamp,
+  .course-page .clear-stamp {
+    animation: none;
+  }
+}
+
+/* ---------- login ---------- */
+.login-main .status-signal--checking,
+.login-main .status-signal--online {
+  display: none;
+}
+
+.login-main .status-signal--offline {
+  max-width: 22rem;
+  border-radius: 12px;
+  line-height: 1.35;
+}
+
+.login-art__copy h2 {
+  max-width: 17ch;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.login-main .portal-hero {
+  display: none;
+}
+
+.login-art__copy {
+  margin-top: 2rem;
+}
+
+.login-bg::after {
+  background: linear-gradient(90deg, rgba(13, 23, 59, 0.82) 0%, rgba(13, 23, 59, 0.5) 38%, rgba(13, 23, 59, 0) 62%),
+    linear-gradient(180deg, rgba(13, 23, 59, 0.55) 0%, rgba(13, 23, 59, 0) 40%);
+}
+
+.login-main .portal-hero__title {
+  font-size: clamp(1.5rem, 2vw, 1.8rem);
+}
+
+.flip-card__face {
+  border-top: 0;
+}
+
+.flip-card__face::before {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .login-art__copy {
+    display: block;
+    margin: 1.75rem 0 0;
+  }
+
+  .login-art__copy h2 {
+    font-size: clamp(1.7rem, 7.4vw, 2.2rem);
+    margin-bottom: 0.6rem;
+  }
+
+  .login-art__copy p {
+    font-size: 0.95rem;
+  }
+
+  .login-main {
+    padding-top: 1.25rem;
+  }
+
+  .login-bg::after {
+    background: linear-gradient(180deg, rgba(13, 23, 59, 0.88) 0%, rgba(13, 23, 59, 0.7) 45%, rgba(13, 23, 59, 0.35) 100%);
+  }
+}
+
+/* ---------- dashboard header ---------- */
+.content__eyebrow {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ---------- next checkpoint: the top of Home ---------- */
+.next-up {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0 0 2.25rem;
+  padding: 1.5rem 1.75rem;
+  color: var(--white);
+  background: var(--navy);
+  border-radius: var(--r-card);
+}
+
+.next-up[hidden] {
+  display: none;
+}
+
+.next-up__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.next-up__course {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  color: #B8D4F0;
+}
+
+.next-up .next-up__title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.next-up--all-clear .next-up__title.next-up__title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  max-width: 48ch;
+}
+
+.next-up__track {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.next-up__stop {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #5A7099;
+  background: var(--navy);
+}
+
+.next-up__stop + .next-up__stop {
+  margin-left: 26px;
+}
+
+.next-up__stop + .next-up__stop::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 28px;
+  height: 2px;
+  margin-right: 1px;
+  background: #5A7099;
+  transform: translateY(-50%);
+}
+
+.next-up__stop--cleared {
+  border-color: var(--steel);
+  background: var(--steel);
+}
+
+.next-up__stop--cleared + .next-up__stop::before {
+  background: var(--steel);
+}
+
+.next-up__stop--here {
+  width: 16px;
+  height: 16px;
+  border-color: var(--amber);
+  background: var(--amber);
+  box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.22);
+}
+
+.next-up__btn {
+  flex: none;
+  padding: 0.85rem 1.4rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--navy);
+  background: var(--amber);
+  border: 0;
+  border-radius: var(--r-ctrl);
+  cursor: pointer;
+}
+
+.next-up__btn:hover {
+  background: #FFD84A;
+}
+
+.next-up__btn:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .next-up {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.25rem;
+  }
+}
+
+/* ---------- course list: plain documents, not gradient tiles ---------- */
+.home-buttons .home-btn,
+.home-buttons .home-btn:nth-child(3n + 2),
+.home-buttons .home-btn:nth-child(3n + 3) {
+  min-height: 0;
+  padding: 1.25rem 1.5rem;
+  color: var(--navy);
+  background: var(--white);
+  background-image: none;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--steel);
+  border-radius: 12px;
+  box-shadow: none;
+  font-size: 1.15rem;
+  text-align: left;
+}
+
+.home-buttons .home-btn::after {
+  display: none;
+}
+
+.home-buttons .home-btn .home-btn__sub {
+  margin-top: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.home-buttons .home-btn:hover {
+  transform: none;
+  border-color: var(--steel);
+  background: #F8FBFF;
+  box-shadow: none;
+}
+
+.home-buttons .home-btn--done {
+  border-left-color: var(--stamp);
+  padding-right: 8rem;
+}
+
+.home-buttons .home-btn--done::before {
+  content: 'Cleared';
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  background: none;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  transform: translateY(-50%) rotate(-5deg);
+}
+
+/* ---------- right rail: one ledger instead of a stack of cards ---------- */
+.home-layout .home-rank {
+  gap: 0;
+  padding: 0.25rem 1.35rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.home-layout .home-rank .rail-card {
+  padding: 1.15rem 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.home-layout .home-rank .rail-card + .rail-card {
+  border-top: 1px solid var(--rule);
+}
+
+.home-layout .home-rank .rail-card:hover {
+  box-shadow: none;
+}
+
+.home-layout .home-rank .rail-card h3 {
+  font-size: 0.95rem;
+}
+
+/* ---------- learning path: a route with checkpoints ---------- */
+.mini-flow {
+  border-radius: var(--r-card);
+  border-color: var(--rule);
+  box-shadow: none;
+}
+
+.mini-flow__title {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.mini-flow__node {
+  width: 140px;
+  gap: 0.45rem;
+}
+
+.mini-flow__bubble {
+  width: 18px;
+  height: 18px;
+  font-size: 0;
+  color: transparent;
+  background: var(--white);
+  border: 2px solid #A9BBD2;
+}
+
+.mini-flow__step--done .mini-flow__bubble {
+  background: var(--steel);
+  border-color: var(--steel);
+}
+
+.mini-flow__step--next .mini-flow__bubble {
+  width: 22px;
+  height: 22px;
+  background: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 0 0 5px rgba(241, 196, 15, 0.25);
+}
+
+.mini-flow__connector {
+  width: 44px;
+  margin: 0 0.15rem auto;
+  margin-top: 8px;
+  align-self: flex-start;
+  background: #C6D5E6;
+}
+
+.mini-flow__connector--done {
+  background: var(--steel);
+}
+
+.mini-flow__step {
+  align-items: flex-start;
+}
+
+.mini-flow__name,
+.mini-flow__step--done .mini-flow__name {
+  color: var(--navy);
+}
+
+.mini-flow__marks,
+.mini-flow__step--done .mini-flow__marks {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.mini-flow__step--next .mini-flow__marks {
+  color: #7A5C00;
+  font-weight: 700;
+}
+
+.tip-banner {
+  color: var(--muted);
+  background: var(--white);
+  border: 1px solid var(--rule);
+}
+
+.tip-banner .ico {
+  color: var(--signal-ink);
+}
+
+/* ---------- topic list ---------- */
+.topic-item--done {
+  background: var(--white);
+  border-color: var(--rule);
+}
+
+.topic-item--done .topic-item__title {
+  color: var(--navy);
+}
+
+[id$="browse-topics-list"] .topic-item::before {
+  border-color: #A9BBD2;
+}
+
+[id$="browse-topics-list"] .topic-item--done::before {
+  content: '';
+  background: var(--steel);
+  border-color: var(--steel);
+}
+
+[id$="browse-topics-list"] .topic-item--next {
+  border-color: var(--amber);
+  box-shadow: inset 4px 0 0 var(--amber);
+}
+
+[id$="browse-topics-list"] .topic-item--next::before {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.topic-item__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.topic-item__head .clear-stamp {
+  margin-top: -0.15rem;
+}
+
+/* ---------- exams ---------- */
+.exam-row .clear-stamp {
+  margin: 0 0.75rem;
+}
+
+.exam-row--done {
+  background: var(--white);
+  border-color: var(--rule);
+}
+
+/* ---------- quieter motion: content no longer slides in card by card ---------- */
+.panel.is-active .rail-card,
+.panel.is-active .topic-item,
+.home-buttons .home-btn {
+  animation: none;
+}
+
+/* ---------- admin: tables and stat cards on the same paper ---------- */
+.stat-card,
+.ledger-table,
+.entry {
+  border-color: var(--rule);
+}
+
+.ledger-table th {
+  color: var(--muted);
+}
+
+.ledger-table__btn--danger {
+  color: var(--stamp);
+  border-color: rgba(180, 67, 44, 0.35);
+  background: var(--white);
+}
+
+.ledger-table__btn--danger:hover {
+  color: var(--white);
+  background: var(--stamp);
+  border-color: var(--stamp);
+}
+
+/* Overview: one ledger with ruled cells instead of floating cards */
+.stat-grid {
+  gap: 0;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+.stat-grid .stat-card {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.25rem 1.4rem;
+  box-shadow: inset -1px -1px 0 var(--rule);
+}
+
+.stat-grid .stat-card__value {
+  color: var(--navy);
+}
 </style>
 </head>
 <body>
@@ -3676,8 +4292,8 @@ body.has-viewer { overflow: hidden; }
 </g>
 
 <!-- sun / moon -->
-<circle cx="520" cy="96" r="70" fill="url(#sc-glow)"/>
-<circle cx="520" cy="96" r="30" fill="#F1C40F" fill-opacity=".3"/>
+<circle cx="330" cy="62" r="56" fill="url(#sc-glow)"/>
+<circle cx="330" cy="62" r="22" fill="#F1C40F" fill-opacity=".3"/>
 
 <!-- clouds -->
 <g class="sc-cloud sc-cloud--a" fill="#fff" fill-opacity=".14">
@@ -3962,7 +4578,7 @@ body.has-viewer { overflow: hidden; }
   <aside class="login-art" aria-label="About the portal">
     <div class="brand brand--light"><svg class="brand__logo" aria-hidden="true"><use href="#cle-logo"/></svg><span class="brand__text"><strong>CLE Portal</strong><span>Customs &amp; Logistics Edu</span></span></div>
     <div class="login-art__copy">
-      <h2>Learn how goods <em>cross borders</em>, step by step.</h2>
+      <h2>Learn how goods cross borders, step by step.</h2>
       <p>Customs clearance, documentation and freight, taught in short topics with quizzes that count.</p>
     </div>
   </aside>
@@ -3975,12 +4591,12 @@ body.has-viewer { overflow: hidden; }
   </p>
 
   <header class="portal-hero">
-    <h1 class="portal-hero__title">Welcome back</h1>
+    <h1 class="portal-hero__title">Log in</h1>
   </header>
 
   <div class="portal-toggle" role="tablist" aria-label="Choose login type">
-    <button type="button" class="portal-toggle__btn is-active" id="toggle-learner" role="tab" aria-selected="true">Learner Portal</button>
-    <button type="button" class="portal-toggle__btn" id="toggle-staff" role="tab" aria-selected="false">Staff Portal</button>
+    <button type="button" class="portal-toggle__btn is-active" id="toggle-learner" role="tab" aria-selected="true">Learner</button>
+    <button type="button" class="portal-toggle__btn" id="toggle-staff" role="tab" aria-selected="false">Staff</button>
   </div>
 
   <div class="flip-card" id="login-flip-card">
@@ -3989,7 +4605,7 @@ body.has-viewer { overflow: hidden; }
       <!-- LEARNER LOGIN -->
       <div class="flip-card__face flip-card__face--front">
         <p class="flip-card__kicker">Learner Login</p>
-        <p class="flip-card__hint">Students &amp; course takers</p>
+        <p class="flip-card__hint">Use the email you signed up with.</p>
 
         <form id="user-login-form" class="flip-card__form" novalidate>
           <label>Email
@@ -4012,7 +4628,7 @@ body.has-viewer { overflow: hidden; }
       <!-- STAFF LOGIN -->
       <div class="flip-card__face flip-card__face--back">
         <p class="flip-card__kicker">Staff Login</p>
-        <p class="flip-card__hint">Portal administrators</p>
+        <p class="flip-card__hint">For portal staff and administrators.</p>
 
         <form id="admin-login-form" class="flip-card__form" novalidate>
           <label>Email
@@ -4105,6 +4721,15 @@ body.has-viewer { overflow: hidden; }
 
     <!-- HOME -->
     <section class="panel is-active" id="home" data-panel>
+      <section class="next-up" id="next-up" aria-labelledby="next-up-title" hidden>
+        <div class="next-up__text">
+          <p class="next-up__course" id="next-up-course"></p>
+          <h2 class="next-up__title" id="next-up-title"></h2>
+          <ol class="next-up__track" id="next-up-track" aria-hidden="true"></ol>
+        </div>
+        <button type="button" class="next-up__btn" id="next-up-btn"></button>
+      </section>
+
       <h2>Your courses</h2>
 
       <div class="home-layout" id="home-layout">
@@ -4147,7 +4772,7 @@ body.has-viewer { overflow: hidden; }
             <span class="avatar-lg" id="rail-avatar">?</span>
             <div>
               <p class="profile-card__name" id="rail-name">…</p>
-              <p class="profile-card__meta">Learner &middot; Rank <strong id="rail-rank">-</strong></p>
+              <p class="profile-card__meta">Learner, rank <strong id="rail-rank">-</strong></p>
             </div>
           </section>
 
@@ -4192,7 +4817,7 @@ body.has-viewer { overflow: hidden; }
 
     <section class="panel" id="exams" data-panel>
       <h2>Exams</h2>
-      <p class="panel__lead">Every topic quiz in one place. Finished tests show as Completed and can be revised at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
+      <p class="panel__lead">Every topic quiz in one place. Finished tests are stamped Cleared and can be revised at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
       <div id="exams-list"></div>
     </section>
 
@@ -4201,8 +4826,19 @@ body.has-viewer { overflow: hidden; }
       <p class="panel__lead">Ask staff a question or report a problem. Discussions are visible to everyone in the portal unless you mark yours private. When staff reply to your ticket, a badge appears on the Discussions menu.</p>
 
       <div id="tickets-list-view">
-        <div class="entry entry--form mb-lg">
-          <form class="entry__form" id="ticket-form">
+        <section class="my-tickets mb-lg" aria-labelledby="my-tickets-title">
+          <h3 class="ticket-section__title" id="my-tickets-title">My tickets</h3>
+          <p class="entry__success" id="ticket-form-success" role="status"></p>
+          <div id="my-tickets-list"><div class="skeleton-card" aria-hidden="true"></div></div>
+        </section>
+
+        <details class="ticket-raise mb-lg" id="ticket-raise">
+          <summary class="ticket-raise__summary">
+            <span class="ticket-raise__label">Raise a Question or Ticket</span>
+            <span class="ticket-raise__hint">Ask staff a question or report a problem</span>
+          </summary>
+          <div class="ticket-raise__body">
+          <form class="entry__form entry--form" id="ticket-form">
             <label>What do you need?
               <select name="category">
                 <option value="question">Question for staff</option>
@@ -4233,13 +4869,14 @@ body.has-viewer { overflow: hidden; }
               <span>Keep this private. Only you and staff will see it.</span>
             </label>
             <p class="entry__error" id="ticket-form-error" role="alert"></p>
-            <p class="entry__success" id="ticket-form-success" role="status"></p>
             <div class="button-row">
               <button type="submit" id="ticket-form-submit">Send to staff</button>
             </div>
           </form>
-        </div>
+          </div>
+        </details>
 
+        <h3 class="ticket-section__title">All discussions</h3>
         <div class="ticket-head">
           <div class="ticket-tabs ticket-tabs--scope" id="ticket-scope"></div>
           <div class="ticket-tabs" id="ticket-tabs"></div>
@@ -4725,7 +5362,7 @@ body.has-viewer { overflow: hidden; }
   <div class="doc-viewer__body" id="doc-viewer-body"></div>
 </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script>
 (function () {
   'use strict';
@@ -5072,7 +5709,7 @@ body.has-viewer { overflow: hidden; }
     } catch (error) {
       console.error('Supabase connection failed:', error);
       var message = error && error.message ? error.message : String(error);
-      setDbStatus('offline', 'Database connection failed');
+      setDbStatus('offline', 'Can\u2019t reach the portal right now. Check your internet connection, then reload the page.');
       badge.title = message;
     }
   }
@@ -5178,6 +5815,7 @@ body.has-viewer { overflow: hidden; }
     refreshTicketBadges();
     homeBrowser.showBrowseView('courses');
     homeBrowser.loadCourseBrowse();
+    loadNextUp();
     showView('dashboard');
   }
 
@@ -5367,7 +6005,7 @@ body.has-viewer { overflow: hidden; }
 
         sb
           .from('topic_progress')
-          .select('topic_id, quiz_completed, quiz_score')
+          .select('topic_id, quiz_completed, quiz_score, completed_at')
           .eq('user_id', currentProfile.id)
           .in('topic_id', topicIds)
           .then(function (progressRes) {
@@ -5379,7 +6017,16 @@ body.has-viewer { overflow: hidden; }
               });
             }
 
-            titleEl.textContent = (courseTitle || 'Course') + ': learning path';
+            var clearedCount = topics.filter(function (topic) {
+              var p = progressByTopic[topic.id];
+              return p && p.quiz_completed;
+            }).length;
+            var nextIndex = clearedCount < topics.length ? topics.findIndex(function (topic) {
+              var p = progressByTopic[topic.id];
+              return !(p && p.quiz_completed);
+            }) : -1;
+
+            titleEl.textContent = clearedCount + ' of ' + topics.length + ' checkpoints cleared';
             stepsEl.innerHTML = '';
 
             topics.forEach(function (topic, index) {
@@ -5387,7 +6034,8 @@ body.has-viewer { overflow: hidden; }
               var done = !!(progress && progress.quiz_completed);
 
               var stepEl = document.createElement('li');
-              stepEl.className = 'mini-flow__step' + (done ? ' mini-flow__step--done' : '');
+              stepEl.className = 'mini-flow__step' + (done ? ' mini-flow__step--done' : '') +
+                (index === nextIndex ? ' mini-flow__step--next' : '');
 
               var nodeEl = document.createElement('div');
               nodeEl.className = 'mini-flow__node';
@@ -5402,7 +6050,9 @@ body.has-viewer { overflow: hidden; }
 
               var marksEl = document.createElement('span');
               marksEl.className = 'mini-flow__marks';
-              marksEl.textContent = done ? (progress.quiz_score || 0) + ' marks earned' : 'Not attempted';
+              marksEl.textContent = done
+                ? 'Cleared, ' + (progress.quiz_score || 0) + ' marks'
+                : (index === nextIndex ? 'Next checkpoint' : 'Not started');
 
               nodeEl.appendChild(bubbleEl);
               nodeEl.appendChild(nameEl);
@@ -5421,6 +6071,122 @@ body.has-viewer { overflow: hidden; }
             wrap.style.display = 'block';
           });
       });
+  }
+
+  /* ========================================================
+     NEXT CHECKPOINT (top of the learner Home page)
+     Finds the first topic the learner hasn't cleared, in course order,
+     so they can pick up where they left off in one click.
+  ======================================================== */
+
+  function loadNextUp() {
+    var box = document.getElementById('next-up');
+
+    if (!box || !currentProfile) {
+      return;
+    }
+
+    Promise.all([
+      sb.from('courses').select('id, title, order_index').eq('section', 'home').order('order_index'),
+      sb.from('course_topics').select('id, course_id, title, order_index').order('order_index'),
+      sb.from('topic_progress').select('topic_id, material_completed, quiz_completed').eq('user_id', currentProfile.id)
+    ]).then(function (results) {
+      if (results.some(function (r) { return r.error; })) {
+        box.hidden = true;
+        return;
+      }
+
+      var courses = results[0].data || [];
+      var topics = results[1].data || [];
+      var progressByTopic = {};
+      (results[2].data || []).forEach(function (row) {
+        progressByTopic[row.topic_id] = row;
+      });
+
+      var target = null;
+
+      courses.some(function (course) {
+        var courseTopics = topics.filter(function (topic) {
+          return topic.course_id === course.id;
+        });
+        var index = courseTopics.findIndex(function (topic) {
+          var p = progressByTopic[topic.id];
+          return !(p && p.quiz_completed);
+        });
+        if (index !== -1) {
+          target = { course: course, topics: courseTopics, index: index };
+          return true;
+        }
+        return false;
+      });
+
+      var courseEl = document.getElementById('next-up-course');
+      var titleEl = document.getElementById('next-up-title');
+      var track = document.getElementById('next-up-track');
+      var button = document.getElementById('next-up-btn');
+      track.innerHTML = '';
+
+      if (!target) {
+        if (topics.length === 0) {
+          box.hidden = true;
+          return;
+        }
+        box.classList.add('next-up--all-clear');
+        courseEl.textContent = 'All your courses';
+        titleEl.textContent = 'Every checkpoint is cleared. New topics will show up here when staff add them.';
+        button.hidden = true;
+        box.hidden = false;
+        return;
+      }
+
+      var topic = target.topics[target.index];
+      var progress = progressByTopic[topic.id] || {};
+      var quizReady = !!progress.material_completed;
+
+      box.classList.remove('next-up--all-clear');
+      courseEl.textContent = target.course.title + ', checkpoint ' + (target.index + 1) + ' of ' + target.topics.length;
+      titleEl.textContent = topic.title;
+
+      target.topics.forEach(function (t, i) {
+        var dot = document.createElement('li');
+        dot.className = 'next-up__stop' + (i < target.index ? ' next-up__stop--cleared' : '') +
+          (i === target.index ? ' next-up__stop--here' : '');
+        track.appendChild(dot);
+      });
+
+      button.hidden = false;
+      button.textContent = quizReady ? 'Take the quiz' : 'Open learning material';
+      button.onclick = function () {
+        goToCoursePage(target.course.id, { topic: topic.id, view: quizReady ? 'quiz' : 'material' });
+      };
+      box.hidden = false;
+    });
+  }
+
+  /* ========================================================
+     CLEARANCE STAMP
+     A finished topic is "cleared", like a shipment passing a customs
+     checkpoint. This is the one bold visual in the portal: only
+     completed work gets it.
+  ======================================================== */
+
+  function buildClearStamp(completedAt, label) {
+    var stamp = document.createElement('span');
+    stamp.className = 'clear-stamp';
+
+    var word = document.createElement('span');
+    word.className = 'clear-stamp__word';
+    word.textContent = label || 'Cleared';
+    stamp.appendChild(word);
+
+    if (completedAt) {
+      var date = document.createElement('span');
+      date.className = 'clear-stamp__date';
+      date.textContent = new Date(completedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+      stamp.appendChild(date);
+    }
+
+    return stamp;
   }
 
   /* ========================================================
@@ -5567,7 +6333,7 @@ body.has-viewer { overflow: hidden; }
 
           sb
             .from('topic_progress')
-            .select('topic_id, material_completed, quiz_completed')
+            .select('topic_id, material_completed, quiz_completed, completed_at')
             .eq('user_id', currentProfile.id)
             .in('topic_id', topicIds)
             .then(function (progressRes) {
@@ -5594,25 +6360,41 @@ body.has-viewer { overflow: hidden; }
               if (allComplete) {
                 var banner = document.createElement('div');
                 banner.className = 'quiz-result';
-                banner.innerHTML = '🎉 <strong>Course completed!</strong><br><br>' +
+                banner.innerHTML = '<strong>Course cleared.</strong><br><br>' +
                   'You\'ve finished every topic in ' + title + '.' +
                   (autoCloseIfComplete ? ' Returning to your courses…' : '');
                 topicsRoot.appendChild(banner);
               }
 
+              var nextTopicId = null;
+              topics.some(function (topic) {
+                var p = progressByTopic[topic.id];
+                if (!(p && p.quiz_completed)) {
+                  nextTopicId = topic.id;
+                  return true;
+                }
+                return false;
+              });
+
               topics.forEach(function (topic, index) {
                 var progress = progressByTopic[topic.id] || {};
+                var isNext = topic.id === nextTopicId;
 
                 var card = document.createElement('div');
-                card.className = 'topic-item' + (progress.quiz_completed ? ' topic-item--done' : '');
+                card.className = 'topic-item' + (progress.quiz_completed ? ' topic-item--done' : '') +
+                  (isNext ? ' topic-item--next' : '');
 
                 var head = document.createElement('div');
                 head.className = 'topic-item__head';
 
                 var titleEl = document.createElement('p');
                 titleEl.className = 'topic-item__title';
-                titleEl.textContent = (index + 1) + '. ' + topic.title + (progress.quiz_completed ? '  ✓' : '');
+                titleEl.textContent = (index + 1) + '. ' + topic.title;
                 head.appendChild(titleEl);
+
+                if (progress.quiz_completed) {
+                  head.appendChild(buildClearStamp(progress.completed_at));
+                }
 
                 var descriptionEl = document.createElement('p');
                 descriptionEl.className = 'topic-item__content';
@@ -5622,7 +6404,7 @@ body.has-viewer { overflow: hidden; }
                 button.type = 'button';
                 button.className = 'home-btn';
                 button.style.marginTop = '1rem';
-                button.textContent = 'Open topic';
+                button.textContent = progress.quiz_completed ? 'Review topic' : (isNext ? 'Continue' : 'Open topic');
 
                 button.addEventListener('click', function () {
                   openTopic(topic.id, topic.title, topic.description, topic.material_path, topic.material_name,
@@ -6267,7 +7049,7 @@ body.has-viewer { overflow: hidden; }
 
           var rejectBtn = document.createElement('button');
           rejectBtn.type = 'button';
-          rejectBtn.className = 'ledger-table__btn';
+          rejectBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           rejectBtn.textContent = 'Reject';
           rejectBtn.addEventListener('click', function () {
             setApproval(user.username, 'reject', rejectBtn);
@@ -6457,7 +7239,7 @@ body.has-viewer { overflow: hidden; }
 
           var deleteBtn = document.createElement('button');
           deleteBtn.type = 'button';
-          deleteBtn.className = 'ledger-table__btn';
+          deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
             if (confirm('Delete "' + course.title + '" and all of its topics, materials, and quizzes?')) {
@@ -6680,7 +7462,7 @@ body.has-viewer { overflow: hidden; }
 
           var deleteBtn = document.createElement('button');
           deleteBtn.type = 'button';
-          deleteBtn.className = 'ledger-table__btn';
+          deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
             if (confirm('Delete topic "' + topic.title + '" and its material and quiz?')) {
@@ -6900,7 +7682,7 @@ body.has-viewer { overflow: hidden; }
 
           var deleteBtn = document.createElement('button');
           deleteBtn.type = 'button';
-          deleteBtn.className = 'ledger-table__btn';
+          deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
             if (confirm('Delete this question?')) {
@@ -7879,7 +8661,7 @@ body.has-viewer { overflow: hidden; }
 
         var removeBtn = document.createElement('button');
         removeBtn.type = 'button';
-        removeBtn.className = 'ledger-table__btn';
+        removeBtn.className = 'ledger-table__btn ledger-table__btn--danger';
         removeBtn.textContent = 'Remove';
         removeBtn.addEventListener('click', function () {
           removeItem(row);
@@ -8045,7 +8827,7 @@ body.has-viewer { overflow: hidden; }
       sb.from('course_topics').select('id, course_id, title, order_index').order('order_index'),
       sb.from('topic_questions_public').select('topic_id'),
       sb.from('topic_progress')
-        .select('topic_id, material_completed, quiz_completed, quiz_score')
+        .select('topic_id, material_completed, quiz_completed, quiz_score, completed_at')
         .eq('user_id', currentProfile.id)
     ]).then(function (results) {
 
@@ -8122,9 +8904,14 @@ body.has-viewer { overflow: hidden; }
           main.appendChild(name);
           main.appendChild(meta);
 
-          var chip = document.createElement('span');
-          chip.className = 'exam-chip exam-chip--' + state;
-          chip.textContent = state === 'done' ? 'Completed' : (state === 'ready' ? 'Not taken' : 'Locked');
+          var chip;
+          if (state === 'done') {
+            chip = buildClearStamp(progress.completed_at);
+          } else {
+            chip = document.createElement('span');
+            chip.className = 'exam-chip exam-chip--' + state;
+            chip.textContent = state === 'ready' ? 'Not taken' : 'Locked';
+          }
 
           var button = document.createElement('button');
           button.type = 'button';
@@ -9457,6 +10244,8 @@ body.has-viewer { overflow: hidden; }
   function renderMyTickets() {
     var root = document.getElementById('tickets-list');
 
+    renderOwnTicketsSummary();
+
     var mineCount = myTickets.filter(function (ticket) {
       return ticket.user_id === currentProfile.id;
     }).length;
@@ -9505,63 +10294,99 @@ body.has-viewer { overflow: hidden; }
       empty.className = 'home-btn-note';
       empty.textContent = scoped.length === 0
         ? (ticketScope === 'mine'
-          ? 'You have no tickets yet. Use the form above to ask staff a question or report a problem.'
-          : 'No discussions yet. Start the first one with the form above.')
+          ? 'You have no tickets yet. Use "Raise a Question or Ticket" above to ask staff.'
+          : 'No discussions yet. Start the first one with "Raise a Question or Ticket" above.')
         : 'No tickets in this view.';
       root.appendChild(empty);
       return;
     }
 
     rows.forEach(function (ticket) {
-      var row = document.createElement('button');
-      row.type = 'button';
-      var isMine = ticket.user_id === currentProfile.id;
-      var unread = isMine && isUnseenBy(ticket, 'user');
-      row.className = 'ticket-row' + (unread ? ' ticket-row--unread' : '');
+      root.appendChild(buildMyTicketRow(ticket));
+    });
+  }
 
-      var main = document.createElement('span');
-      main.className = 'ticket-row__main';
+  function buildMyTicketRow(ticket) {
+    var row = document.createElement('button');
+    row.type = 'button';
+    var isMine = ticket.user_id === currentProfile.id;
+    var unread = isMine && isUnseenBy(ticket, 'user');
+    row.className = 'ticket-row' + (unread ? ' ticket-row--unread' : '');
 
-      var subject = document.createElement('span');
-      subject.className = 'ticket-row__subject';
-      subject.textContent = ticket.subject;
+    var main = document.createElement('span');
+    main.className = 'ticket-row__main';
 
-      var meta = document.createElement('span');
-      meta.className = 'ticket-row__meta';
-      var metaParts = ['#' + ticket.ticket_no];
-      metaParts.push(isMine ? 'You' : (ticketPeople[ticket.user_id] || 'A learner'));
-      metaParts.push(TICKET_CATEGORIES[ticket.category] || ticket.category);
-      if (ticket.assigned_to) {
-        metaParts.push('Assigned to ' + (ticketPeople[ticket.assigned_to] || 'staff'));
+    var subject = document.createElement('span');
+    subject.className = 'ticket-row__subject';
+    subject.textContent = ticket.subject;
+
+    var meta = document.createElement('span');
+    meta.className = 'ticket-row__meta';
+    var metaParts = ['#' + ticket.ticket_no];
+    metaParts.push(isMine ? 'You' : (ticketPeople[ticket.user_id] || 'A learner'));
+    metaParts.push(TICKET_CATEGORIES[ticket.category] || ticket.category);
+    if (ticket.assigned_to) {
+      metaParts.push('Assigned to ' + (ticketPeople[ticket.assigned_to] || 'staff'));
+    }
+    metaParts.push('Updated ' + fmtDateTime(ticket.last_message_at));
+    meta.textContent = metaParts.join('. ');
+
+    main.appendChild(subject);
+    main.appendChild(meta);
+    row.appendChild(main);
+
+    if (ticket.is_private) {
+      var lock = document.createElement('span');
+      lock.className = 'ticket-chip ticket-chip--private';
+      lock.textContent = 'Private';
+      row.appendChild(lock);
+    }
+
+    if (unread) {
+      var fresh = document.createElement('span');
+      fresh.className = 'ticket-chip ticket-chip--new';
+      fresh.textContent = 'New reply';
+      row.appendChild(fresh);
+    }
+
+    row.appendChild(ticketChip(ticket.status, 'user'));
+
+    row.addEventListener('click', function () {
+      openMyTicket(ticket.id);
+    });
+
+    return row;
+  }
+
+  // "My tickets" at the top of Discussions: unread replies first, then most recently updated.
+  function renderOwnTicketsSummary() {
+    var root = document.getElementById('my-tickets-list');
+    var raise = document.getElementById('ticket-raise');
+
+    var mine = myTickets.filter(function (ticket) {
+      return ticket.user_id === currentProfile.id;
+    }).sort(function (x, y) {
+      var unreadX = isUnseenBy(x, 'user') ? 1 : 0;
+      var unreadY = isUnseenBy(y, 'user') ? 1 : 0;
+      if (unreadX !== unreadY) {
+        return unreadY - unreadX;
       }
-      metaParts.push('Updated ' + fmtDateTime(ticket.last_message_at));
-      meta.textContent = metaParts.join('. ');
+      return new Date(y.last_message_at) - new Date(x.last_message_at);
+    });
 
-      main.appendChild(subject);
-      main.appendChild(meta);
-      row.appendChild(main);
+    root.innerHTML = '';
 
-      if (ticket.is_private) {
-        var lock = document.createElement('span');
-        lock.className = 'ticket-chip ticket-chip--private';
-        lock.textContent = 'Private';
-        row.appendChild(lock);
-      }
+    if (mine.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'home-btn-note';
+      empty.textContent = 'You have no tickets yet. Use "Raise a Question or Ticket" below to ask staff.';
+      root.appendChild(empty);
+      raise.open = true;
+      return;
+    }
 
-      if (unread) {
-        var fresh = document.createElement('span');
-        fresh.className = 'ticket-chip ticket-chip--new';
-        fresh.textContent = 'New reply';
-        row.appendChild(fresh);
-      }
-
-      row.appendChild(ticketChip(ticket.status, 'user'));
-
-      row.addEventListener('click', function () {
-        openMyTicket(ticket.id);
-      });
-
-      root.appendChild(row);
+    mine.forEach(function (ticket) {
+      root.appendChild(buildMyTicketRow(ticket));
     });
   }
 
@@ -9690,9 +10515,8 @@ body.has-viewer { overflow: hidden; }
       }
 
       form.reset();
+      document.getElementById('ticket-raise').open = false;
       successEl.textContent = 'Ticket #' + res.data.ticket_no + ' sent. Staff will reply here.';
-      myTicketFilter = 'all';
-      ticketScope = 'mine';
       loadMyTickets();
     });
   });
@@ -10394,6 +11218,9 @@ body.has-viewer { overflow: hidden; }
       }
 
       if (containerId === 'view-dashboard') {
+        if (target === 'home') {
+          loadNextUp();
+        }
         if (target === 'other-courses') {
           ensureOtherCoursesLoaded();
         }
