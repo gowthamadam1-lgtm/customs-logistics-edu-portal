@@ -6919,14 +6919,22 @@ input[type="file"] {
       button.disabled = true;
       button.textContent = 'Saving completion…';
 
+      // Two steps on purpose: create the progress row if it is missing, then set
+      // only the "material completed" flag. A single upsert would also rewrite
+      // user_id and topic_id, which learners are not allowed to change.
       sb
         .from('topic_progress')
-        .upsert({
-          user_id: currentProfile.id,
-          topic_id: topicId,
-          material_completed: true,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,topic_id' })
+        .upsert({ user_id: currentProfile.id, topic_id: topicId }, { onConflict: 'user_id,topic_id', ignoreDuplicates: true })
+        .then(function (created) {
+          if (created.error) {
+            return created;
+          }
+          return sb
+            .from('topic_progress')
+            .update({ material_completed: true, updated_at: new Date().toISOString() })
+            .eq('user_id', currentProfile.id)
+            .eq('topic_id', topicId);
+        })
         .then(function (res) {
 
           if (res.error) {
