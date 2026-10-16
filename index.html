@@ -5486,7 +5486,7 @@ html.is-restoring .app-splash {
 /* ---------- Help contacts ---------- */
 .help-contacts {
   max-width: 760px;
-  margin-top: 2rem;
+  margin: 0 0 2rem;
 }
 
 .help-contacts[hidden] {
@@ -6195,7 +6195,14 @@ html.is-restoring .app-splash {
 
     <section class="panel" id="help" data-panel>
       <h2 class="panel__title">Help</h2>
-      <p class="panel__lead">Answers to the questions learners ask most, and who to contact. Tap a question to see the answer.</p>
+      <p class="panel__lead">Who to contact, and answers to the questions learners ask most. Tap a question to see the answer.</p>
+
+      <!-- Filled from the help_contacts table (staff add them under Help contacts); hidden while there are none. -->
+      <section class="help-contacts" id="help-contacts" aria-labelledby="help-contacts-title" hidden>
+        <h3 class="help-group__title" id="help-contacts-title">Contacts</h3>
+        <p class="help-contacts__lead">Tap an email or a number to reach the right person directly.</p>
+        <ul class="contact-list" id="help-contacts-list"></ul>
+      </section>
 
       <div class="help">
         <section class="help-group">
@@ -6240,13 +6247,6 @@ html.is-restoring .app-splash {
           </details>
         </section>
       </div>
-
-      <!-- Filled from the help_contacts table (staff add them under Help contacts); hidden while there are none. -->
-      <section class="help-contacts" id="help-contacts" aria-labelledby="help-contacts-title" hidden>
-        <h3 class="help-group__title" id="help-contacts-title">Contacts</h3>
-        <p class="help-contacts__lead">Still need help? Reach the right person directly.</p>
-        <ul class="contact-list" id="help-contacts-list"></ul>
-      </section>
     </section>
 
     <section class="panel" id="rank-report" data-panel>
@@ -6691,7 +6691,7 @@ html.is-restoring .app-splash {
 
     <section class="panel" id="contacts" data-panel>
       <h2 class="panel__title">Help contacts</h2>
-      <p class="panel__lead">The people learners can reach for help. Learners see them under Contacts at the bottom of the Help page, where one tap emails or calls them.</p>
+      <p class="panel__lead">The people learners can reach for help. Learners see them under Contacts at the top of the Help page, where one tap emails or calls them.</p>
 
       <div class="entry entry--form mb-lg">
         <form class="entry__form" id="contact-form" novalidate>
@@ -7466,6 +7466,9 @@ html.is-restoring .app-splash {
     homeBrowser.loadCourseBrowse();
     loadAnnouncements();
     loadNextUp();
+    // Contacts sit at the top of Help: fetch them now so Help opens with them
+    // in place instead of pushing the questions down a moment later.
+    loadHelpContacts();
     showView('dashboard');
   }
 
