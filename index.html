@@ -23,6 +23,24 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     });
   });
 }
+
+/* A saved sign-in opens the portal straight into the learner's page, so show the
+   loading screen (#app-splash) instead of flashing the sign-in form while it is
+   checked. The portal's code removes it (or, with no internet, the Supabase
+   script's onerror); the timer is a last safety net if the check never ends. */
+(function () {
+  var savedSignInKey = 'sb-ybmlicailkivohjzinay-auth-token';
+  try {
+    if (localStorage.getItem(savedSignInKey) || sessionStorage.getItem(savedSignInKey)) {
+      document.documentElement.classList.add('is-restoring');
+      setTimeout(function () {
+        document.documentElement.classList.remove('is-restoring');
+      }, 15000);
+    }
+  } catch (error) {
+    // Storage blocked: show the sign-in form as usual.
+  }
+})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5101,6 +5119,143 @@ input[type="file"] {
   }
 }
 
+/* ---------- loading truck (#cargo-loader-tpl) ----------
+   Fades in after a moment, so quick loads never flash it. The road and the
+   plane fade out at both edges. With "reduce motion" on, everything stands
+   still and the speed lines stay hidden. */
+.cargo-loader {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  padding: 2.5rem 1rem;
+  animation: cargo-appear 0.25s var(--ease) 0.15s both;
+}
+
+.cargo-loader__art {
+  width: min(220px, 72%);
+  height: auto;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.cargo-loader__label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.cargo-loader__plane {
+  transform: translateX(176px);
+  animation: cargo-fly 3.6s linear -1.3s infinite;
+}
+
+.cargo-loader__climb {
+  transform: translateY(14px);
+  animation: cargo-climb 3.6s cubic-bezier(0.2, 0.7, 0.3, 1) -1.3s infinite;
+}
+
+.cargo-loader__trail {
+  fill: none;
+  stroke: var(--steel);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 5;
+}
+
+.cargo-loader__speed line {
+  stroke: var(--steel);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: cargo-speed 0.9s linear infinite;
+}
+
+.cargo-loader__speed line:nth-child(2) { animation-delay: -0.3s; }
+.cargo-loader__speed line:nth-child(3) { animation-delay: -0.6s; }
+
+.cargo-loader__lane {
+  stroke: var(--amber);
+  stroke-width: 2;
+  stroke-dasharray: 12 12;
+  animation: cargo-lane 0.45s linear infinite;
+}
+
+.cargo-loader__body {
+  animation: cargo-jolt 0.32s ease-in-out infinite alternate;
+}
+
+.cargo-loader__wheel > circle { fill: var(--navy); }
+.cargo-loader__hub circle { fill: #8A99B0; }
+.cargo-loader__hub path { stroke: var(--navy); stroke-width: 1.3; }
+
+.cargo-loader__hub {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cargo-spin 0.8s linear infinite;
+}
+
+@keyframes cargo-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cargo-fly { from { transform: translateX(-30px); } to { transform: translateX(262px); } }
+@keyframes cargo-climb { from { transform: translateY(25px); } to { transform: translateY(11px); } }
+@keyframes cargo-speed {
+  0% { transform: translateX(8px); opacity: 0; }
+  25% { opacity: 0.8; }
+  100% { transform: translateX(-14px); opacity: 0; }
+}
+@keyframes cargo-lane { to { stroke-dashoffset: 24; } }
+@keyframes cargo-jolt { to { transform: translateY(-1.2px); } }
+@keyframes cargo-spin { to { transform: rotate(360deg); } }
+
+/* Start-up screen while a saved sign-in is checked (see the <head> script). */
+.app-splash {
+  display: none;
+}
+
+html.is-restoring body {
+  overflow: hidden;
+}
+
+html.is-restoring .app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(13, 23, 59, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.app-splash.is-leaving {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.app-splash__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.app-splash__logo {
+  width: 48px;
+  height: 48px;
+}
+
+.app-splash .cargo-loader__art {
+  width: min(260px, 80vw);
+}
+
 /* ---------- page header: the page's name; greeting only on Home ---------- */
 .view-app .panel__title {
   display: none;
@@ -5456,6 +5611,60 @@ input[type="file"] {
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-glossary" viewBox="0 0 24 24"><path d="M10 19h-6a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1h6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-6a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2z" /><path d="M12 5v16" /><path d="M7 7h1" /><path d="M7 11h1" /><path d="M16 7h1" /><path d="M16 11h1" /></symbol><symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M18 8a3 3 0 0 1 0 6" /><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" /><path d="M12 8l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
+
+<!-- =========================================================
+     LOADING TRUCK
+     A container truck drives on while a cargo plane climbs overhead (the
+     artwork of the sign-in scene). cargoLoader() copies it wherever a page is
+     loading; #app-splash shows it while a saved sign-in is checked.
+========================================================= -->
+
+<template id="cargo-loader-tpl">
+  <div class="cargo-loader" role="status">
+    <svg class="cargo-loader__art" viewBox="0 0 220 96" aria-hidden="true" focusable="false">
+      <g class="cargo-loader__plane"><g class="cargo-loader__climb">
+        <path class="cargo-loader__trail" d="M-48 5L-21 1.5"/>
+        <polygon points="-13,0 -18,-9 -13,-9 -6,0" fill="#3B9AE1"/>
+        <ellipse cx="0" cy="0" rx="16" ry="3.4" fill="#1E2C5E"/>
+        <path d="M12 -2Q18 0 12 2" fill="#3B9AE1"/>
+        <polygon points="-2,1.4 -10,11 -4,11 6,1.4" fill="#8CC8F2"/>
+        <g fill="#FFFFFF"><circle cx="7" cy="-0.6" r="0.8"/><circle cx="3.5" cy="-0.6" r="0.8"/><circle cx="0" cy="-0.6" r="0.8"/><circle cx="-3.5" cy="-0.6" r="0.8"/></g>
+      </g></g>
+      <g class="cargo-loader__speed">
+        <line x1="18" y1="49" x2="32" y2="49"/>
+        <line x1="10" y1="58" x2="30" y2="58"/>
+        <line x1="20" y1="67" x2="34" y2="67"/>
+      </g>
+      <rect x="0" y="85" width="220" height="8" rx="4" fill="#0D173B"/>
+      <line class="cargo-loader__lane" x1="0" y1="89" x2="220" y2="89"/>
+      <g class="cargo-loader__body">
+        <rect x="40" y="38" width="88" height="32" rx="3" fill="#F1C40F"/>
+        <path d="M51 42v24M62 42v24M73 42v24M84 42v24M95 42v24M106 42v24M117 42v24" stroke="#0A1030" stroke-opacity=".28" stroke-width="1.6"/>
+        <rect x="38" y="70" width="128" height="4" rx="1" fill="#2C3E50"/>
+        <path d="M132 76V50q0-4 4-4h16q3 0 5 3l8 14q1 2 1 4v9z" fill="#3B9AE1"/>
+        <path d="M142 50h10l7 13h-17z" fill="#DFF1FF"/>
+        <circle cx="164" cy="69" r="1.8" fill="#F1C40F"/>
+      </g>
+      <g class="cargo-loader__wheel"><circle cx="56" cy="78" r="7"/><g class="cargo-loader__hub"><circle cx="56" cy="78" r="3.2"/><path d="M53 78h6M56 75v6"/></g></g>
+      <g class="cargo-loader__wheel"><circle cx="72" cy="78" r="7"/><g class="cargo-loader__hub"><circle cx="72" cy="78" r="3.2"/><path d="M69 78h6M72 75v6"/></g></g>
+      <g class="cargo-loader__wheel"><circle cx="142" cy="78" r="7"/><g class="cargo-loader__hub"><circle cx="142" cy="78" r="3.2"/><path d="M139 78h6M142 75v6"/></g></g>
+      <g class="cargo-loader__wheel"><circle cx="158" cy="78" r="7"/><g class="cargo-loader__hub"><circle cx="158" cy="78" r="3.2"/><path d="M155 78h6M158 75v6"/></g></g>
+    </svg>
+    <p class="cargo-loader__label">Loading…</p>
+  </div>
+</template>
+
+<div class="app-splash" id="app-splash">
+  <div class="app-splash__brand"><svg class="app-splash__logo" aria-hidden="true"><use href="#cle-logo"/></svg><span>CLE Portal</span></div>
+</div>
+<script>
+  // Fill the loading screen now: the portal's own code arrives later.
+  (function () {
+    var loader = document.getElementById('cargo-loader-tpl').content.firstElementChild.cloneNode(true);
+    loader.querySelector('.cargo-loader__label').textContent = 'Opening your portal…';
+    document.getElementById('app-splash').appendChild(loader);
+  })();
+</script>
 
 <!-- =========================================================
      LANDING PAGE
@@ -6920,7 +7129,8 @@ input[type="file"] {
   <div class="doc-viewer__body" id="doc-viewer-body"></div>
 </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<!-- If this library cannot load (no internet), drop the start-up loading screen at once instead of after its 15 s safety net. -->
+<script src="https://unpkg.com/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" onerror="document.documentElement.classList.remove('is-restoring')"></script>
 <script>
 (function () {
   'use strict';
@@ -7185,6 +7395,13 @@ input[type="file"] {
       }, { once: true });
       dialog.showModal();
     });
+  }
+
+  // The loading truck (#cargo-loader-tpl) with a short message under it.
+  function cargoLoader(label) {
+    var loader = document.getElementById('cargo-loader-tpl').content.firstElementChild.cloneNode(true);
+    loader.querySelector('.cargo-loader__label').textContent = label;
+    return loader;
   }
 
   /* ========================================================
@@ -7683,12 +7900,21 @@ input[type="file"] {
       return;
     }
 
+    // Only the course asked for last may draw here (switching courses quickly).
+    wrap.setAttribute('data-course-id', courseId);
+    function isStale() {
+      return wrap.getAttribute('data-course-id') !== String(courseId);
+    }
+
     sb
       .from('course_topics')
       .select('id, title, order_index')
       .eq('course_id', courseId)
       .order('order_index')
       .then(function (topicsRes) {
+        if (isStale()) {
+          return;
+        }
 
         if (topicsRes.error || !topicsRes.data || topicsRes.data.length === 0) {
           wrap.style.display = 'none';
@@ -7707,6 +7933,10 @@ input[type="file"] {
           fetchQuestionCounts(topicIds)
         ])
           .then(function (results) {
+            if (isStale()) {
+              return;
+            }
+
             var progressRes = results[0];
             var questionCounts = results[1];
 
@@ -8125,6 +8355,8 @@ input[type="file"] {
     var currentCourseDescription = '';
     var completedCourseIds = {};
     var materialLoadToken = 0;
+    var quizLoadToken = 0;
+    var courseOpenToken = 0;
 
     function showBrowseView(name) {
       if (name === currentBrowseKey) {
@@ -8293,7 +8525,8 @@ input[type="file"] {
       document.getElementById(ids.courseDescription).textContent = description || '';
 
       var topicsRoot = document.getElementById(ids.topicsList);
-      topicsRoot.innerHTML = '<p class="home-btn-note">Loading topics…</p>';
+      topicsRoot.innerHTML = '';
+      topicsRoot.appendChild(cargoLoader('Loading topics…'));
 
       showBrowseView('topics');
       loadMiniLearningFlow(courseId, title, ids);
@@ -8304,6 +8537,10 @@ input[type="file"] {
         .eq('course_id', courseId)
         .order('order_index')
         .then(function (res) {
+          // Another course was opened meanwhile: its own answer draws the list.
+          if (currentCourseId !== courseId) {
+            return;
+          }
 
           if (res.error) {
             console.error('Could not load topics:', res.error);
@@ -8334,6 +8571,10 @@ input[type="file"] {
             fetchQuestionCounts(topicIds)
           ])
             .then(function (results) {
+              if (currentCourseId !== courseId) {
+                return;
+              }
+
               var progressRes = results[0];
               var questionCounts = results[1];
 
@@ -8441,10 +8682,7 @@ input[type="file"] {
 
       showBrowseView('material');
 
-      var loading = document.createElement('p');
-      loading.className = 'home-btn-note';
-      loading.textContent = 'Loading learning material…';
-      linkEl.appendChild(loading);
+      linkEl.appendChild(cargoLoader('Loading learning material…'));
 
       var token = ++materialLoadToken;
 
@@ -8605,16 +8843,23 @@ input[type="file"] {
       document.getElementById(ids.quizTitle).textContent = title + ': Quiz';
 
       var form = document.getElementById(ids.quizForm);
-      form.innerHTML = '<p class="home-btn-note">Loading questions…</p>';
+      form.innerHTML = '';
+      form.appendChild(cargoLoader('Loading questions…'));
       form.setAttribute('data-attempt-mode', alreadyCompleted ? 'practice' : 'graded');
+      // Until this quiz's questions are on screen, nothing can be submitted:
+      // the form must not still point at a quiz opened earlier.
+      form.removeAttribute('data-topic-id');
 
       document.getElementById(ids.quizResult).innerHTML = '';
 
       var submitBtn = document.getElementById(ids.quizSubmitBtn);
       submitBtn.textContent = alreadyCompleted ? 'Submit practice attempt' : 'Submit quiz';
       submitBtn.disabled = false;
+      submitBtn.style.display = 'none';
 
       showBrowseView('quiz');
+
+      var token = ++quizLoadToken;
 
       sb
         .from('topic_questions_public')
@@ -8622,6 +8867,10 @@ input[type="file"] {
         .eq('topic_id', topicId)
         .order('order_index')
         .then(function (res) {
+          // A later quiz was opened meanwhile; never draw these questions under it.
+          if (token !== quizLoadToken) {
+            return;
+          }
 
           if (res.error) {
             console.error('Could not load questions:', res.error);
@@ -8678,6 +8927,7 @@ input[type="file"] {
           });
 
           form.setAttribute('data-topic-id', topicId);
+          submitBtn.style.display = '';
         });
     }
 
@@ -8776,12 +9026,30 @@ input[type="file"] {
     // Opens one course by id (used by the stand-alone course page). With deep.topic it jumps straight to that
     // topic's learning material, or to its quiz when deep.view is 'quiz' and the material is already completed.
     function openCourseById(courseId, deep) {
+      var token = ++courseOpenToken;
+
+      // Until this course arrives, show the loading truck, not the title,
+      // progress and topics of the course that was open before.
+      currentCourseId = courseId;
+      document.getElementById(ids.courseTitle).textContent = '';
+      document.getElementById(ids.courseDescription).textContent = '';
+      if (ids.miniFlowWrap) {
+        document.getElementById(ids.miniFlowWrap).style.display = 'none';
+      }
+      var topicsRoot = document.getElementById(ids.topicsList);
+      topicsRoot.innerHTML = '';
+      topicsRoot.appendChild(cargoLoader('Loading course…'));
+      showBrowseView('topics');
+
       return sb
         .from('courses')
         .select('id, title, description')
         .eq('id', courseId)
         .maybeSingle()
         .then(function (res) {
+          if (token !== courseOpenToken) {
+            return false;
+          }
 
           if (res.error || !res.data) {
             document.getElementById(ids.courseTitle).textContent = 'Course not found';
@@ -8810,6 +9078,10 @@ input[type="file"] {
               .eq('topic_id', deep.topic)
               .maybeSingle()
           ]).then(function (results) {
+            if (token !== courseOpenToken) {
+              return false;
+            }
+
             var topic = results[0].data;
             var progress = results[1].data || {};
 
@@ -8839,6 +9111,9 @@ input[type="file"] {
   var homeBrowser = createCourseBrowser({
     section: 'home',
     emptyMessage: 'No courses yet. Check back soon.',
+    // Like Other Courses: a course opens on its own full page (#course=<id>),
+    // so on phones it starts at the top instead of further down Home.
+    opensCoursePage: true,
     ids: {
       layout: 'home-layout',
       courses: 'browse-courses',
@@ -13697,6 +13972,26 @@ input[type="file"] {
      INITIAL SESSION CHECK
   ======================================================== */
 
+  // Fades out the start-up loading screen (shown only when a saved sign-in
+  // exists, see the <head> script) once the first page is in place.
+  function finishStartup() {
+    var root = document.documentElement;
+    var splash = document.getElementById('app-splash');
+
+    if (!root.classList.contains('is-restoring')) {
+      return;
+    }
+    if (REDUCED_MOTION.matches) {
+      root.classList.remove('is-restoring');
+      return;
+    }
+    splash.classList.add('is-leaving');
+    window.setTimeout(function () {
+      root.classList.remove('is-restoring');
+      splash.classList.remove('is-leaving');
+    }, 300);
+  }
+
   showView('landing');
 
   getSessionProfile()
@@ -13709,6 +14004,7 @@ input[type="file"] {
         }
 
         showView('landing');
+        finishStartup();
         return;
       }
 
@@ -13717,10 +14013,12 @@ input[type="file"] {
       } else {
         routeLearner(profile);
       }
+      finishStartup();
     })
     .catch(function (error) {
       console.error('Session check failed:', error);
       showView('landing');
+      finishStartup();
     });
 
 })();
