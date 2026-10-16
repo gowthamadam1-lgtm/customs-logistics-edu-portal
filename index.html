@@ -5025,11 +5025,437 @@ input[type="file"] {
   margin-top: 0.4rem;
   font-size: 0.85rem;
 }
+
+/* ---------- in-page messages (toasts) ---------- */
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 1300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(92vw, 480px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 0.75rem 0.85rem 1rem;
+  color: var(--white);
+  background: var(--navy);
+  border-radius: var(--r-ctrl);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  animation: toast-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toast--error { background: var(--fail-ink); }
+.toast--success { background: var(--pass-ink); }
+
+.toast.is-leaving {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.toast__text {
+  flex: 1;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.toast__close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: -0.3rem 0;
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.toast__close:hover,
+.toast__close:focus-visible {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast.is-leaving {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ---------- page header: the page's name; greeting only on Home ---------- */
+.view-app .panel__title {
+  display: none;
+}
+
+.view-app:not(.is-home-page) .content__eyebrow {
+  display: none;
+}
+
+/* ---------- course cards: progress ---------- */
+.home-buttons .home-btn .home-btn__title {
+  display: block;
+}
+
+.home-buttons .home-btn--done {
+  padding-right: 1.5rem;
+}
+
+.home-buttons .home-btn--done .home-btn__title {
+  padding-right: 7.5rem;
+}
+
+.home-buttons .home-btn--done::before {
+  top: 1.2rem;
+  transform: none;
+}
+
+.course-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.course-progress__bar {
+  position: relative;
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  overflow: hidden;
+  background: #E6EEF7;
+  border-radius: 999px;
+}
+
+.course-progress__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--steel);
+  border-radius: inherit;
+}
+
+.home-btn--done .course-progress__fill {
+  background: var(--pass-ink);
+}
+
+.course-progress__label {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------- Help ---------- */
+.help {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 760px;
+}
+
+.help-group__title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--navy);
+}
+
+.help-q {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
+.help-q + .help-q {
+  margin-top: 0.5rem;
+}
+
+.help-q summary {
+  position: relative;
+  padding: 0.95rem 3rem 0.95rem 1.1rem;
+  font-weight: 600;
+  color: var(--navy);
+  list-style: none;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.help-q summary::-webkit-details-marker {
+  display: none;
+}
+
+.help-q summary::after {
+  content: '';
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--steel);
+  border-bottom: 2px solid var(--steel);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 0.2s var(--ease);
+}
+
+.help-q[open] > summary::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.help-q summary:hover {
+  background: #F7FAFD;
+}
+
+.help-q summary:focus-visible {
+  outline: 3px solid rgba(59, 154, 225, 0.45);
+  outline-offset: 2px;
+}
+
+.help-q__a {
+  padding: 0 1.1rem 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.help-q__a p {
+  margin: 0;
+  max-width: 68ch;
+}
+
+.help-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  max-width: 760px;
+  margin-top: 2rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.help-ask__text {
+  flex: 1 1 18rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.help-ask__btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--navy);
+  border-radius: var(--r-ctrl);
+  text-decoration: none;
+}
+
+.help-ask__btn:hover,
+.help-ask__btn:focus-visible {
+  background: var(--steel);
+  color: var(--white);
+}
+
+/* ---------- Glossary ---------- */
+.glossary-search {
+  max-width: 760px;
+  margin-bottom: 1.25rem;
+}
+
+.glossary-search__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.glossary-search__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-ctrl);
+}
+
+.glossary-search__input:focus-visible {
+  outline: 3px solid rgba(59, 154, 225, 0.35);
+  border-color: var(--steel);
+}
+
+.glossary-search__count {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.glossary-list {
+  max-width: 760px;
+  margin: 0;
+  padding: 0.25rem 1.35rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.glossary-entry {
+  padding: 1rem 0;
+}
+
+/* a line between visible terms only, so search results never start with one */
+.glossary-entry:not([hidden]) ~ .glossary-entry:not([hidden]) {
+  border-top: 1px solid var(--rule);
+}
+
+.glossary-entry[hidden] {
+  display: none;
+}
+
+.glossary-entry__term {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.glossary-entry__def {
+  margin: 0;
+  max-width: 68ch;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.glossary-empty,
+.glossary-note {
+  max-width: 760px;
+  color: var(--muted);
+}
+
+.glossary-empty {
+  margin: 1rem 0 0;
+}
+
+.glossary-note {
+  margin: 1.25rem 0 0;
+  font-size: 0.92rem;
+}
+
+/* ---------- Announcements ---------- */
+.announcements {
+  margin: 0 0 1.75rem;
+}
+
+.announcements[hidden] {
+  display: none;
+}
+
+.panel .announcements .announcements__heading {
+  margin: 0 0 0.6rem;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--navy);
+}
+
+.announcements__list {
+  margin: 0;
+  padding: 0.25rem 1.25rem;
+  list-style: none;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--steel);
+  border-radius: var(--r-card);
+}
+
+.announcement {
+  padding: 0.9rem 0;
+}
+
+.announcements__list .announcement + .announcement {
+  border-top: 1px solid var(--rule);
+}
+
+.announcement__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+.panel .announcement .announcement__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.announcement__date {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.announcement__body {
+  margin: 0.35rem 0 0;
+  max-width: 68ch;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* admin list */
+#announcements-admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 760px;
+}
+
+#announcements-admin-list .announcement {
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.announcement__live {
+  margin-left: auto;
+}
+
+.announcement__delete {
+  margin-top: 0.75rem;
+}
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-glossary" viewBox="0 0 24 24"><path d="M10 19h-6a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1h6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-6a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2z" /><path d="M12 5v16" /><path d="M7 7h1" /><path d="M7 11h1" /><path d="M16 7h1" /><path d="M16 11h1" /></symbol><symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M18 8a3 3 0 0 1 0 6" /><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" /><path d="M12 8l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
 
 <!-- =========================================================
      LANDING PAGE
@@ -5475,6 +5901,7 @@ input[type="file"] {
       <li><a href="#/home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
       <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
       <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
+      <li><a href="#/glossary" class="sidebar__link" data-section="glossary"><svg class="ico" aria-hidden="true"><use href="#i-glossary"/></svg><span>Glossary</span></a></li>
       <li class="sidebar__item--phone"><a href="#/rank-report" class="sidebar__link" data-section="rank-report"><svg class="ico" aria-hidden="true"><use href="#i-podium"/></svg><span>Rank Report</span></a></li>
       <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
       <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
@@ -5497,6 +5924,11 @@ input[type="file"] {
 
     <!-- HOME -->
     <section class="panel is-active" id="home" data-panel>
+      <section class="announcements" id="home-announcements" aria-labelledby="announcements-title" hidden>
+        <h2 class="announcements__heading" id="announcements-title">Announcements</h2>
+        <ul class="announcements__list" id="announcements-list"></ul>
+      </section>
+
       <section class="next-up" id="next-up" aria-labelledby="next-up-title" hidden>
         <div class="next-up__text">
           <p class="next-up__course" id="next-up-course"></p>
@@ -5587,12 +6019,114 @@ input[type="file"] {
     </section>
 
     <section class="panel" id="help" data-panel>
-      <h2>Help</h2>
-      <p>Content for this section is on its way.</p>
+      <h2 class="panel__title">Help</h2>
+      <p class="panel__lead">Answers to the questions learners ask most. Tap a question to see the answer.</p>
+
+      <div class="help">
+        <section class="help-group">
+          <h3 class="help-group__title">Getting started</h3>
+          <details class="help-q">
+            <summary>How do I get access?</summary>
+            <div class="help-q__a"><p>Create an account from the login screen. If we ask you to confirm your email, click the link we send you. A staff member then approves your account; until they do, logging in says your account is awaiting approval.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>I forgot my password</summary>
+            <div class="help-q__a"><p>Ask a staff member to set a new one for you. Once you're logged in, you can change it any time on the <strong>Account</strong> page.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>What does “Remember me” do?</summary>
+            <div class="help-q__a"><p>It keeps you logged in on this device after you close the browser. Untick it on a shared or public computer.</p></div>
+          </details>
+        </section>
+        <section class="help-group">
+          <h3 class="help-group__title">Courses and topics</h3>
+          <details class="help-q">
+            <summary>Where do I start?</summary>
+            <div class="help-q__a"><p><strong>Home</strong> shows your next checkpoint: the first topic you haven't completed yet. Tap its button to carry on where you left off. Your courses are listed below it, each with how many topics you've completed.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>How does a topic work?</summary>
+            <div class="help-q__a"><p>Open the topic and go through its learning material: documents, videos, photos or reading text. When you've finished, tap <strong>Mark Learning Material as Completed</strong>. That unlocks the topic's quiz.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>What's in Other Courses?</summary>
+            <div class="help-q__a"><p>Extra courses on top of the ones on Home. They work the same way.</p></div>
+          </details>
+        </section>
+        <section class="help-group">
+          <h3 class="help-group__title">Quizzes, points and rank</h3>
+          <details class="help-q">
+            <summary>How are quizzes marked?</summary>
+            <div class="help-q__a"><p>Your <strong>first attempt</strong> is the one that counts. Each correct answer earns one point. You pass with 60% or more correct, and the result shows as <strong>Passed</strong> in green or <strong>Failed</strong> in red on the course page and in <strong>Exams</strong>.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>Can I retake a quiz?</summary>
+            <div class="help-q__a"><p>Yes, as often as you like: choose <strong>Revise test</strong> in Exams or <strong>Revise Quiz</strong> on the topic. Retakes are practice. They are marked so you can check yourself, but they don't change your recorded score or points.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>What happens if I fail a quiz?</summary>
+            <div class="help-q__a"><p>The topic still counts as completed, so you can move on, but your first score stays as it is. Go back over the learning material and retake the quiz for practice.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>What do Pending and Locked mean in Exams?</summary>
+            <div class="help-q__a"><p><strong>Pending</strong> means the quiz is ready for you to take. <strong>Locked</strong> means you need to finish that topic's learning material first.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>How is my rank worked out?</summary>
+            <div class="help-q__a"><p>Learners are ranked by total points. You'll find your rank and the full leaderboard on Home on a computer, and on the <strong>Rank Report</strong> page on a phone.</p></div>
+          </details>
+        </section>
+        <section class="help-group">
+          <h3 class="help-group__title">KPI reports</h3>
+          <details class="help-q">
+            <summary>How do I upload my KPI report?</summary>
+            <div class="help-q__a"><p>Open <strong>Update KPI Report</strong>, give it a title (and notes if you like), choose your PowerPoint file (.ppt or .pptx, up to 50 MB) and tap <strong>Upload KPI report</strong>. Staff review every report.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>Can I remove a report?</summary>
+            <div class="help-q__a"><p>Yes. Your reports are listed on the same page; choose <strong>Delete</strong> on the one you want to remove.</p></div>
+          </details>
+        </section>
+        <section class="help-group">
+          <h3 class="help-group__title">Questions and support</h3>
+          <details class="help-q">
+            <summary>How do I ask staff a question?</summary>
+            <div class="help-q__a"><p>Open <strong>Discussions</strong> and choose <strong>Raise a Question or Ticket</strong>. Pick what it's about, write a subject and the details, and send it. Your tickets are listed at the top of Discussions.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>Who can see my question?</summary>
+            <div class="help-q__a"><p>Everyone in the portal can see discussions, so others with the same question can learn from the answer. Tick <strong>Keep this private</strong> to make it visible only to you and staff.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>How do I know staff have replied?</summary>
+            <div class="help-q__a"><p>A number appears next to <strong>Discussions</strong> in the menu, and the ticket is marked <strong>New reply</strong>.</p></div>
+          </details>
+        </section>
+        <section class="help-group">
+          <h3 class="help-group__title">Your account and the app</h3>
+          <details class="help-q">
+            <summary>How do I change my name, photo or password?</summary>
+            <div class="help-q__a"><p>On the <strong>Account</strong> page. Photos can be JPG, PNG or WEBP, up to 3 MB.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>How do I delete my account?</summary>
+            <div class="help-q__a"><p>On the <strong>Account</strong> page, choose <strong>Delete my account</strong> and type your username to confirm. This permanently deletes your account and your data and can't be undone. Read more in the <a href="privacy.html#delete">privacy policy</a>.</p></div>
+          </details>
+          <details class="help-q">
+            <summary>Can I install CLE Portal on my phone?</summary>
+            <div class="help-q__a"><p>Yes. In Chrome on Android, open the menu (⋮) and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>. On an iPhone, in Safari, tap <strong>Share</strong> and then <strong>Add to Home Screen</strong>.</p></div>
+          </details>
+        </section>
+      </div>
+
+      <div class="help-ask">
+        <p class="help-ask__text">Can’t find your answer? Ask staff and they’ll reply in Discussions.</p>
+        <a href="#/discussions" class="help-ask__btn" id="help-ask-btn">Ask staff a question</a>
+      </div>
     </section>
 
     <section class="panel" id="rank-report" data-panel>
-      <h2>Rank Report</h2>
+      <h2 class="panel__title">Rank Report</h2>
       <p class="panel__lead">Learners ranked by points. Points come from your first attempt at each topic quiz, so retakes don't change the board.</p>
       <div class="rank-rail-slot" id="rank-rail-slot"></div>
       <p class="rank-standing" id="rank-standing" hidden></p>
@@ -5601,14 +6135,195 @@ input[type="file"] {
       </ol>
     </section>
 
+    <section class="panel" id="glossary" data-panel>
+      <h2 class="panel__title">Glossary</h2>
+      <p class="panel__lead">Customs and logistics terms in plain English. Start typing to find one.</p>
+
+      <div class="glossary-search">
+        <label class="glossary-search__label" for="glossary-search">Search the glossary</label>
+        <input type="search" id="glossary-search" class="glossary-search__input" placeholder="For example: bill of lading, FOB, IEC" autocomplete="off">
+        <p class="glossary-search__count" id="glossary-count" role="status" aria-live="polite"></p>
+      </div>
+
+      <dl class="glossary-list" id="glossary-list">
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">AD code</dt>
+            <dd class="glossary-entry__def">Authorised Dealer code. A code for the exporter's bank (a bank allowed to deal in foreign exchange), registered with customs at the port of export. Customs uses it to link shipping bills to export payments and incentives.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">AEO</dt>
+            <dd class="glossary-entry__def">Authorised Economic Operator. A customs certification for businesses with a good compliance record. Certified businesses get simpler, faster clearance.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Air Waybill (AWB)</dt>
+            <dd class="glossary-entry__def">The transport document for air cargo, issued by the airline or its agent. It is a receipt for the goods and the contract of carriage but, unlike a bill of lading, it is not a document of title.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Assessable value</dt>
+            <dd class="glossary-entry__def">The value customs uses to work out import duty. It is usually the price paid for the goods plus the cost of freight and insurance up to the port of import.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">BCD</dt>
+            <dd class="glossary-entry__def">Basic Customs Duty. The main duty on imported goods. Its rate is set in the Customs Tariff according to the product's tariff (HS) code.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Bill of Entry</dt>
+            <dd class="glossary-entry__def">The declaration an importer, or their customs broker, files with Indian Customs to clear imported goods, either for use in India (home consumption) or for storage in a bonded warehouse.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Bill of Lading (B/L)</dt>
+            <dd class="glossary-entry__def">The document a shipping line issues for goods carried by sea. It is a receipt for the cargo, evidence of the contract of carriage and, when negotiable, a document of title: whoever holds it can claim the goods.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Bonded warehouse</dt>
+            <dd class="glossary-entry__def">A warehouse licensed by customs where imported goods can be stored without paying duty until they are cleared for use in India or sent abroad again.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">CBIC</dt>
+            <dd class="glossary-entry__def">Central Board of Indirect Taxes and Customs. The body under India's Ministry of Finance that runs customs and GST.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Certificate of Origin</dt>
+            <dd class="glossary-entry__def">A document stating the country where goods were made. Importers use it to claim lower duty under trade agreements and to meet import rules.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">CFR</dt>
+            <dd class="glossary-entry__def">Cost and Freight (Incoterm, sea transport). The seller pays freight to the named destination port, but risk passes to the buyer once the goods are on board at the port of loading.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">CFS</dt>
+            <dd class="glossary-entry__def">Container Freight Station. A customs-approved facility near a port where cargo is packed into or unpacked from containers, examined and cleared.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">CIF</dt>
+            <dd class="glossary-entry__def">Cost, Insurance and Freight (Incoterm, sea transport). Like CFR, but the seller also buys minimum insurance for the goods. Risk still passes to the buyer once the goods are on board at the port of loading.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Commercial invoice</dt>
+            <dd class="glossary-entry__def">The seller's bill to the buyer, showing what was sold, quantities, prices and terms of sale. Customs uses it to check the value and description of the goods.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Consignee and consignor</dt>
+            <dd class="glossary-entry__def">The consignee is the person or company the goods are sent to. The consignor, or shipper, is the one sending them.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Customs broker</dt>
+            <dd class="glossary-entry__def">A licensed agent who handles customs clearance for importers and exporters, such as filing bills of entry and shipping bills. Earlier called a Custom House Agent (CHA).</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">DAP</dt>
+            <dd class="glossary-entry__def">Delivered at Place (Incoterm). The seller delivers the goods, ready for unloading, at the named destination. The buyer handles import clearance and pays import duties.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">DDP</dt>
+            <dd class="glossary-entry__def">Delivered Duty Paid (Incoterm). The seller delivers the goods to the named destination cleared for import, with duties paid. This puts the most responsibility on the seller.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Demurrage</dt>
+            <dd class="glossary-entry__def">A charge for leaving cargo or containers at the port or terminal beyond the free time allowed.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Detention</dt>
+            <dd class="glossary-entry__def">A charge for keeping a shipping line's container outside the port beyond the free time allowed, for example at the importer's warehouse.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">DGFT</dt>
+            <dd class="glossary-entry__def">Directorate General of Foreign Trade. The government body that runs India's Foreign Trade Policy and issues the Importer-Exporter Code (IEC).</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Duty drawback</dt>
+            <dd class="glossary-entry__def">A refund of duties paid on imported materials or inputs that are used to make goods which are then exported.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">EXW</dt>
+            <dd class="glossary-entry__def">Ex Works (Incoterm). The seller makes the goods available at its own premises. The buyer arranges everything else, including loading, transport and export clearance.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">FCA</dt>
+            <dd class="glossary-entry__def">Free Carrier (Incoterm). The seller hands the goods, cleared for export, to the carrier chosen by the buyer at a named place. Risk passes to the buyer at that point.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">FCL and LCL</dt>
+            <dd class="glossary-entry__def">Full Container Load: one shipper's cargo fills a whole container. Less than Container Load: several shippers' goods share one container.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">FOB</dt>
+            <dd class="glossary-entry__def">Free On Board (Incoterm, sea transport). The seller delivers the goods, cleared for export, on board the vessel chosen by the buyer at the named port. Risk passes once the goods are on board.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Freight forwarder</dt>
+            <dd class="glossary-entry__def">A company that arranges transport for a shipper: booking carriers, preparing documents and often combining smaller shipments.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">HS code</dt>
+            <dd class="glossary-entry__def">Harmonized System code. The international system for classifying goods, maintained by the World Customs Organization. The first six digits are the same worldwide; India uses an eight-digit code in its customs tariff.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">ICD</dt>
+            <dd class="glossary-entry__def">Inland Container Depot. A “dry port” away from the coast where cargo is cleared by customs and moved to and from seaports in containers.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">ICEGATE</dt>
+            <dd class="glossary-entry__def">Indian Customs Electronic Gateway. The CBIC's online portal for filing customs documents such as bills of entry and shipping bills.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">IEC</dt>
+            <dd class="glossary-entry__def">Importer-Exporter Code. A ten-character code issued by the DGFT that most businesses need before they can import into or export from India.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">IGM and EGM</dt>
+            <dd class="glossary-entry__def">Import General Manifest and Export General Manifest. The carrier's list of all the cargo arriving on, or leaving on, a ship or aircraft, filed with customs. For sea cargo, newer rules call these the arrival and departure manifests.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">IGST on imports</dt>
+            <dd class="glossary-entry__def">Integrated GST, charged on most imports on top of customs duty. Registered businesses can usually claim it back as input tax credit.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Incoterms</dt>
+            <dd class="glossary-entry__def">Standard trade terms published by the International Chamber of Commerce (ICC), such as FOB, CIF and DDP. Each one sets out who arranges and pays for transport, insurance and customs clearance, and where risk passes from seller to buyer.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Let Export Order (LEO)</dt>
+            <dd class="glossary-entry__def">Customs' permission to load export goods onto the ship or aircraft, given once the shipping bill has been processed and any examination is done.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Letter of credit (LC)</dt>
+            <dd class="glossary-entry__def">A bank's promise to pay the seller, as long as the seller presents the documents it asks for, such as the bill of lading and the commercial invoice.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Out of Charge (OOC)</dt>
+            <dd class="glossary-entry__def">Customs' order releasing imported goods once the bill of entry is assessed and the duty is paid, so the importer can take them away.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Packing list</dt>
+            <dd class="glossary-entry__def">A list of what is in each package of a shipment, with weights and sizes. It helps customs and the receiver check the goods.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">POL and POD</dt>
+            <dd class="glossary-entry__def">Port of loading, where goods are put on board the ship, and port of discharge, where they are taken off.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">Shipping Bill</dt>
+            <dd class="glossary-entry__def">The declaration an exporter, or their customs broker, files with Indian Customs to export goods.</dd>
+          </div>
+          <div class="glossary-entry">
+            <dt class="glossary-entry__term">TEU</dt>
+            <dd class="glossary-entry__def">Twenty-foot Equivalent Unit. A measure of container capacity: a 20-foot container is 1 TEU and a 40-foot container is 2 TEU.</dd>
+          </div>
+      </dl>
+      <p class="glossary-empty" id="glossary-empty" hidden>No term matches your search. Ask staff about it in <a href="#/discussions">Discussions</a>.</p>
+
+      <p class="glossary-note">These are short summaries to help you learn. For official rules, duty rates and the latest changes, check the CBIC and DGFT websites.</p>
+    </section>
+
     <section class="panel" id="exams" data-panel>
-      <h2>Exams</h2>
+      <h2 class="panel__title">Exams</h2>
       <p class="panel__lead">Every topic quiz in one place. Finished tests show Passed in green or Failed in red; the pass mark is 60%. You can revise any test at any time. A revision is a practice attempt, so your recorded score stays as it is.</p>
       <div id="exams-list"></div>
     </section>
 
     <section class="panel" id="discussions" data-panel>
-      <h2>Discussions</h2>
+      <h2 class="panel__title">Discussions</h2>
       <p class="panel__lead">Ask staff a question or report a problem. Discussions are visible to everyone in the portal unless you mark yours private. When staff reply to your ticket, a badge appears on the Discussions menu.</p>
 
       <div id="tickets-list-view">
@@ -5677,7 +6392,7 @@ input[type="file"] {
     </section>
 
     <section class="panel" id="other-courses" data-panel>
-      <h2>Other Courses</h2>
+      <h2 class="panel__title">Other Courses</h2>
 
       <div id="other-browse-courses"></div>
 
@@ -5706,7 +6421,7 @@ input[type="file"] {
     </section>
 
     <section class="panel" id="kpi-report" data-panel>
-      <h2>Update KPI Report</h2>
+      <h2 class="panel__title">Update KPI Report</h2>
       <p class="panel__lead">Upload your latest KPI report as a PowerPoint file (.ppt or .pptx, up to 50 MB). Staff review every report from the admin portal. Upload a newer one whenever your numbers change and delete older ones you no longer need.</p>
 
       <div class="entry entry--form mb-lg">
@@ -5734,7 +6449,7 @@ input[type="file"] {
 
     <!-- ACCOUNT -->
     <section class="panel" id="account" data-panel>
-      <h2>Account settings</h2>
+      <h2 class="panel__title">Account settings</h2>
 
       <div class="account-forms">
         <div class="entry account-avatar-entry">
@@ -5803,6 +6518,7 @@ input[type="file"] {
       <li><a href="#/admin/learners" class="sidebar__link" data-section="learners"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg><span>Learners</span></a></li>
       <li><a href="#/admin/kpi-review" class="sidebar__link" data-section="kpi-review"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Learners&#39; KPI</span></a></li>
       <li><a href="#/admin/tickets" class="sidebar__link" data-section="tickets"><svg class="ico" aria-hidden="true"><use href="#i-lifebuoy"/></svg><span>Support Tickets</span><span class="nav-badge" id="nav-badge-tickets" hidden></span></a></li>
+      <li><a href="#/admin/announcements" class="sidebar__link" data-section="announcements"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a></li>
       <li><a href="#/admin/topics" class="sidebar__link" data-section="topics" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg><span>Topics</span></a></li>
       <li><a href="#/admin/admin-account" class="sidebar__link" data-section="admin-account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a></li>
     </ul>
@@ -5822,7 +6538,7 @@ input[type="file"] {
 
     <!-- OVERVIEW -->
     <section class="panel is-active" id="overview" data-panel>
-      <h2>Overview</h2>
+      <h2 class="panel__title">Overview</h2>
       <p class="panel__lead">A live count of accounts, content and file storage.</p>
       <div class="overview-toolbar">
         <button type="button" class="btn-secondary" id="overview-refresh">Refresh</button>
@@ -5842,7 +6558,7 @@ input[type="file"] {
 
     <!-- APPROVALS -->
     <section class="panel" id="approvals" data-panel>
-      <h2>Approvals</h2>
+      <h2 class="panel__title">Approvals</h2>
       <p>New learner sign-ups wait here until you approve them.</p>
 
       <table class="ledger-table">
@@ -5857,7 +6573,7 @@ input[type="file"] {
 
     <!-- LEARNERS -->
     <section class="panel" id="learners" data-panel>
-      <h2>Learners</h2>
+      <h2 class="panel__title">Learners</h2>
 
       <div class="entry mb-lg">
         <form class="entry__form" id="add-learner-form">
@@ -5906,7 +6622,7 @@ input[type="file"] {
 
     <!-- TOPICS / COURSES -->
     <section class="panel" id="topics" data-panel>
-      <h2>Courses</h2>
+      <h2 class="panel__title">Courses</h2>
 
       <!-- COURSES LEVEL -->
       <div id="courses-level">
@@ -6008,8 +6724,29 @@ input[type="file"] {
     </section>
 
     <!-- SUPPORT TICKETS -->
+    <section class="panel" id="announcements" data-panel>
+      <h2 class="panel__title">Announcements</h2>
+      <p class="panel__lead">Post a short notice for learners, such as a new topic or an exam date. The three newest show at the top of every learner's Home page.</p>
+
+      <div class="entry entry--form mb-lg">
+        <form class="entry__form" id="announcement-form" novalidate>
+          <label>Title
+            <input type="text" name="title" required minlength="3" maxlength="120" placeholder="For example: New topic added: GST on imports">
+          </label>
+          <label>Message
+            <textarea name="body" rows="4" required maxlength="1000" placeholder="What learners need to know, in a sentence or two."></textarea>
+          </label>
+          <p class="entry__error" id="announcement-error" role="alert"></p>
+          <button type="submit" id="announcement-submit">Post announcement</button>
+        </form>
+      </div>
+
+      <h3 class="ticket-section__title">Posted announcements</h3>
+      <div id="announcements-admin-list"></div>
+    </section>
+
     <section class="panel" id="tickets" data-panel>
-      <h2>Support Tickets</h2>
+      <h2 class="panel__title">Support Tickets</h2>
       <p class="panel__lead">Questions and problems raised by learners. Reply here and close a ticket once it is resolved. Under Needs reply, the ticket that has waited longest comes first.</p>
 
       <div id="admin-tickets-list-view">
@@ -6041,7 +6778,7 @@ input[type="file"] {
 
     <!-- LEARNERS' KPI -->
     <section class="panel" id="kpi-review" data-panel>
-      <h2>Learners&#39; KPI</h2>
+      <h2 class="panel__title">Learners&#39; KPI</h2>
       <p class="panel__lead">KPI reports uploaded by learners, newest first. Preview opens the deck in the Office viewer and Download saves the original file.</p>
 
       <div class="kpi-toolbar">
@@ -6067,7 +6804,7 @@ input[type="file"] {
 
     <!-- ADMIN ACCOUNT -->
     <section class="panel" id="admin-account" data-panel>
-      <h2>Account settings</h2>
+      <h2 class="panel__title">Account settings</h2>
 
       <div class="account-forms">
         <div class="entry">
@@ -6145,6 +6882,19 @@ input[type="file"] {
     </div>
   </main>
 </div>
+
+<dialog class="confirm-dialog" id="confirm-dialog" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-text">
+  <form method="dialog" class="confirm-dialog__form">
+    <h2 class="confirm-dialog__title" id="confirm-dialog-title"></h2>
+    <p class="confirm-dialog__text" id="confirm-dialog-text"></p>
+    <div class="confirm-dialog__actions">
+      <button type="submit" value="cancel" class="confirm-dialog__cancel" autofocus>Cancel</button>
+      <button type="submit" value="confirm" class="confirm-dialog__danger" id="confirm-dialog-ok">Delete</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast-region" id="toast-region" aria-live="polite"></div>
 
 <dialog class="confirm-dialog" id="delete-user-dialog" aria-labelledby="delete-user-title">
   <form method="dialog" class="confirm-dialog__form" id="delete-user-form" novalidate>
@@ -6366,6 +7116,78 @@ input[type="file"] {
   }
 
   /* ========================================================
+     IN-PAGE MESSAGES (instead of browser pop-ups)
+     showToast: a short message at the bottom of the screen. Errors stay
+     until they are closed; other messages fade after a few seconds.
+     confirmAction: a "Delete this…?" question in the portal's own dialog,
+     answered with a Promise (true = confirmed).
+  ======================================================== */
+
+  function showToast(message, tone) {
+    var region = document.getElementById('toast-region');
+    if (!region) {
+      return;
+    }
+
+    var toast = document.createElement('div');
+    toast.className = 'toast toast--' + (tone || 'info');
+    toast.setAttribute('role', tone === 'error' ? 'alert' : 'status');
+
+    var text = document.createElement('p');
+    text.className = 'toast__text';
+    text.textContent = message;
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'toast__close';
+    close.setAttribute('aria-label', 'Dismiss message');
+    close.textContent = '\u00d7';
+
+    function dismiss() {
+      if (!toast.isConnected) {
+        return;
+      }
+      toast.classList.add('is-leaving');
+      window.setTimeout(function () {
+        toast.remove();
+      }, 200);
+    }
+
+    close.addEventListener('click', dismiss);
+    toast.appendChild(text);
+    toast.appendChild(close);
+    region.appendChild(toast);
+
+    while (region.children.length > 3) {
+      region.removeChild(region.firstChild);
+    }
+
+    if (tone !== 'error') {
+      window.setTimeout(dismiss, 5000);
+    }
+  }
+
+  function confirmAction(options) {
+    var dialog = document.getElementById('confirm-dialog');
+
+    if (!dialog || dialog.open) {
+      return Promise.resolve(false);
+    }
+
+    document.getElementById('confirm-dialog-title').textContent = options.title;
+    document.getElementById('confirm-dialog-text').textContent = options.text || '';
+    document.getElementById('confirm-dialog-ok').textContent = options.confirmLabel || 'Delete';
+    dialog.returnValue = '';
+
+    return new Promise(function (resolve) {
+      dialog.addEventListener('close', function () {
+        resolve(dialog.returnValue === 'confirm');
+      }, { once: true });
+      dialog.showModal();
+    });
+  }
+
+  /* ========================================================
      TRANSITION HELPERS
   ======================================================== */
 
@@ -6506,6 +7328,11 @@ input[type="file"] {
   var currentViewName = null;
 
   function showView(name) {
+    if (name === 'landing' || name === 'signup') {
+      document.title = 'Customs and Logistics Edu Portal';
+    } else if (name === 'course') {
+      document.title = 'Course \u00b7 CLE Portal';
+    }
     if (name === currentViewName) {
       return;
     }
@@ -6654,6 +7481,7 @@ input[type="file"] {
     refreshTicketBadges();
     homeBrowser.showBrowseView('courses');
     homeBrowser.loadCourseBrowse();
+    loadAnnouncements();
     loadNextUp();
     showView('dashboard');
   }
@@ -6951,6 +7779,186 @@ input[type="file"] {
   }
 
   /* ========================================================
+     ANNOUNCEMENTS
+     Staff post short notices; learners see the three newest at the top
+     of Home. Text is always inserted as text, never as HTML.
+  ======================================================== */
+
+  function fmtShortDate(iso) {
+    return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function buildAnnouncement(row, withDelete) {
+    var item = document.createElement(withDelete ? 'article' : 'li');
+    item.className = 'announcement';
+
+    var head = document.createElement('div');
+    head.className = 'announcement__head';
+
+    var title = document.createElement(withDelete ? 'h4' : 'h3');
+    title.className = 'announcement__title';
+    title.textContent = row.title;
+
+    var date = document.createElement('time');
+    date.className = 'announcement__date';
+    date.dateTime = row.created_at;
+    date.textContent = fmtShortDate(row.created_at);
+
+    head.appendChild(title);
+    head.appendChild(date);
+
+    var body = document.createElement('p');
+    body.className = 'announcement__body';
+    body.textContent = row.body;
+
+    item.appendChild(head);
+    item.appendChild(body);
+
+    if (withDelete) {
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'ledger-table__btn ledger-table__btn--danger announcement__delete';
+      del.textContent = 'Delete';
+      del.addEventListener('click', function () {
+        confirmAction({
+          title: 'Delete this announcement?',
+          text: '"' + row.title + '" will be removed from every learner\'s Home page.',
+          confirmLabel: 'Delete announcement'
+        }).then(function (ok) {
+          if (!ok) {
+            return;
+          }
+          del.disabled = true;
+          sb.from('announcements').delete().eq('id', row.id).select('id').then(function (res) {
+            if (res.error || !res.data || res.data.length === 0) {
+              del.disabled = false;
+              showToast('Could not delete the announcement' + (res.error ? ': ' + res.error.message : '.'), 'error');
+              return;
+            }
+            showToast('Announcement deleted.', 'success');
+            loadAdminAnnouncements();
+          });
+        });
+      });
+      item.appendChild(del);
+    }
+
+    return item;
+  }
+
+  function loadAnnouncements() {
+    var box = document.getElementById('home-announcements');
+    var list = document.getElementById('announcements-list');
+
+    if (!box || !currentProfile) {
+      return;
+    }
+
+    sb.from('announcements')
+      .select('id, title, body, created_at')
+      .order('created_at', { ascending: false })
+      .limit(3)
+      .then(function (res) {
+        if (res.error || !res.data || res.data.length === 0) {
+          box.hidden = true;
+          return;
+        }
+        list.innerHTML = '';
+        res.data.forEach(function (row) {
+          list.appendChild(buildAnnouncement(row, false));
+        });
+        box.hidden = false;
+      });
+  }
+
+  var adminAnnouncementsToken = 0;
+
+  function loadAdminAnnouncements() {
+    var root = document.getElementById('announcements-admin-list');
+    if (!root) {
+      return;
+    }
+
+    var token = ++adminAnnouncementsToken;
+    root.innerHTML = '<div class="skeleton-card" aria-hidden="true"></div><p class="sr-only" role="status">Loading announcements</p>';
+
+    sb.from('announcements')
+      .select('id, title, body, created_at')
+      .order('created_at', { ascending: false })
+      .then(function (res) {
+        if (token !== adminAnnouncementsToken) {
+          return;
+        }
+        root.innerHTML = '';
+
+        if (res.error) {
+          var error = document.createElement('p');
+          error.className = 'entry__error';
+          error.textContent = 'Could not load announcements: ' + res.error.message;
+          root.appendChild(error);
+          return;
+        }
+
+        if (!res.data || res.data.length === 0) {
+          var empty = document.createElement('p');
+          empty.className = 'home-btn-note';
+          empty.textContent = 'Nothing posted yet. Your first announcement will appear here and on every learner\'s Home page.';
+          root.appendChild(empty);
+          return;
+        }
+
+        res.data.forEach(function (row, index) {
+          var item = buildAnnouncement(row, true);
+          if (index < 3) {
+            var live = document.createElement('span');
+            live.className = 'pill pill--pass announcement__live';
+            live.textContent = 'On Home';
+            item.querySelector('.announcement__head').appendChild(live);
+          }
+          root.appendChild(item);
+        });
+      });
+  }
+
+  document.getElementById('announcement-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var form = e.target;
+    var errorEl = document.getElementById('announcement-error');
+    var submitBtn = document.getElementById('announcement-submit');
+    var title = form.elements.title.value.trim();
+    var body = form.elements.body.value.trim();
+
+    errorEl.textContent = '';
+
+    if (title.length < 3 || title.length > 120) {
+      errorEl.textContent = 'Give the announcement a title between 3 and 120 characters.';
+      return;
+    }
+    if (!body) {
+      errorEl.textContent = 'Write the message learners should see.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+
+    sb.from('announcements')
+      .insert({ title: title, body: body })
+      .then(function (res) {
+        submitBtn.disabled = false;
+
+        if (res.error) {
+          errorEl.textContent = 'Could not post the announcement: ' + res.error.message;
+          return;
+        }
+
+        form.reset();
+        showToast('Announcement posted. Learners will see it on Home.', 'success');
+        loadAdminAnnouncements();
+      });
+  });
+
+  /* ========================================================
      NEXT CHECKPOINT (top of the learner Home page)
      Finds the first topic the learner hasn't cleared, in course order,
      so they can pick up where they left off in one click.
@@ -7165,37 +8173,112 @@ input[type="file"] {
             return;
           }
 
-          root.innerHTML = '';
+          var courses = res.data;
 
-          var wrap = document.createElement('div');
-          wrap.className = 'home-buttons';
+          // Each card shows how far the learner is: completed topics out of the course's topics.
+          Promise.all([
+            sb.from('course_topics').select('id, course_id').in('course_id', courses.map(function (course) {
+              return course.id;
+            })),
+            currentProfile
+              ? sb.from('topic_progress').select('topic_id, quiz_completed').eq('user_id', currentProfile.id)
+              : Promise.resolve({ data: [] })
+          ]).then(function (results) {
+            var progressKnown = !results[0].error && !results[1].error;
+            var topicsByCourse = {};
+            var completedTopics = {};
 
-          res.data.forEach(function (course) {
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'home-btn' + (completedCourseIds[course.id] ? ' home-btn--done' : '');
-            btn.textContent = course.title + (completedCourseIds[course.id] ? '  ✓' : '');
-
-            if (course.description) {
-              var sub = document.createElement('span');
-              sub.className = 'home-btn__sub';
-              sub.textContent = course.description;
-              btn.appendChild(sub);
+            if (progressKnown) {
+              (results[0].data || []).forEach(function (topic) {
+                (topicsByCourse[topic.course_id] = topicsByCourse[topic.course_id] || []).push(topic.id);
+              });
+              (results[1].data || []).forEach(function (row) {
+                if (row.quiz_completed) {
+                  completedTopics[row.topic_id] = true;
+                }
+              });
             }
 
-            btn.addEventListener('click', function () {
-              if (opts.opensCoursePage) {
-                goToCoursePage(course.id);
-              } else {
-                openCourse(course.id, course.title, course.description);
-              }
-            });
-
-            wrap.appendChild(btn);
+            renderCourseCards(courses, progressKnown ? { topicsByCourse: topicsByCourse, completedTopics: completedTopics } : null);
           });
-
-          root.appendChild(wrap);
         });
+    }
+
+    function buildCourseProgress(completed, total) {
+      var wrap = document.createElement('span');
+      wrap.className = 'course-progress';
+
+      var bar = document.createElement('span');
+      bar.className = 'course-progress__bar';
+      bar.setAttribute('aria-hidden', 'true');
+
+      var fill = document.createElement('span');
+      fill.className = 'course-progress__fill';
+      fill.style.width = (total ? Math.round((completed / total) * 100) : 0) + '%';
+      bar.appendChild(fill);
+
+      var label = document.createElement('span');
+      label.className = 'course-progress__label';
+      label.textContent = total === 0
+        ? 'No topics yet'
+        : (completed === total
+          ? 'All ' + total + ' topic' + (total === 1 ? '' : 's') + ' completed'
+          : completed + ' of ' + total + ' topics completed');
+
+      wrap.appendChild(bar);
+      wrap.appendChild(label);
+      return wrap;
+    }
+
+    function renderCourseCards(courses, progress) {
+      var root = document.getElementById(ids.courses);
+      root.innerHTML = '';
+
+      var wrap = document.createElement('div');
+      wrap.className = 'home-buttons';
+
+      courses.forEach(function (course) {
+        var topicIds = progress ? (progress.topicsByCourse[course.id] || []) : [];
+        var completed = progress ? topicIds.filter(function (id) {
+          return progress.completedTopics[id];
+        }).length : 0;
+
+        if (progress) {
+          completedCourseIds[course.id] = topicIds.length > 0 && completed === topicIds.length;
+        }
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'home-btn' + (completedCourseIds[course.id] ? ' home-btn--done' : '');
+
+        var titleEl = document.createElement('span');
+        titleEl.className = 'home-btn__title';
+        titleEl.textContent = course.title;
+        btn.appendChild(titleEl);
+
+        if (course.description) {
+          var sub = document.createElement('span');
+          sub.className = 'home-btn__sub';
+          sub.textContent = course.description;
+          btn.appendChild(sub);
+        }
+
+        if (progress) {
+          btn.appendChild(buildCourseProgress(completed, topicIds.length));
+        }
+
+        btn.addEventListener('click', function () {
+          if (opts.opensCoursePage) {
+            goToCoursePage(course.id);
+          } else {
+            openCourse(course.id, course.title, course.description);
+          }
+        });
+
+        wrap.appendChild(btn);
+      });
+
+      root.appendChild(wrap);
     }
 
     function openCourse(courseId, title, description, autoCloseIfComplete) {
@@ -7204,6 +8287,9 @@ input[type="file"] {
       currentCourseDescription = description || '';
 
       document.getElementById(ids.courseTitle).textContent = title;
+      if (currentViewName === 'course') {
+        document.title = title + ' \u00b7 CLE Portal';
+      }
       document.getElementById(ids.courseDescription).textContent = description || '';
 
       var topicsRoot = document.getElementById(ids.topicsList);
@@ -7499,7 +8585,7 @@ input[type="file"] {
             console.error(res.error);
             button.disabled = false;
             button.textContent = 'Mark Learning Material as Completed';
-            alert('Could not save your progress: ' + res.error.message);
+            showToast('Could not save your progress: ' + res.error.message, 'error');
             return;
           }
 
@@ -7991,6 +9077,57 @@ input[type="file"] {
 
   document.getElementById('delete-user-cancel').addEventListener('click', closeDeleteUser);
 
+  /* ========================================================
+     GLOSSARY SEARCH
+     Filters the terms as you type, matching the term or its explanation.
+  ======================================================== */
+
+  (function wireGlossary() {
+    var input = document.getElementById('glossary-search');
+    var entries = Array.prototype.slice.call(document.querySelectorAll('#glossary-list .glossary-entry'));
+    var count = document.getElementById('glossary-count');
+    var empty = document.getElementById('glossary-empty');
+
+    if (!input || !entries.length) {
+      return;
+    }
+
+    var searchable = entries.map(function (entry) {
+      return entry.textContent.toLowerCase().replace(/\s+/g, ' ');
+    });
+
+    function filter() {
+      var words = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      var shown = 0;
+
+      entries.forEach(function (entry, index) {
+        var match = words.every(function (word) {
+          return searchable[index].indexOf(word) !== -1;
+        });
+        entry.hidden = !match;
+        if (match) {
+          shown += 1;
+        }
+      });
+
+      empty.hidden = shown !== 0;
+      count.textContent = words.length
+        ? shown + ' of ' + entries.length + ' terms match'
+        : entries.length + ' terms';
+    }
+
+    input.addEventListener('input', filter);
+    filter();
+  })();
+
+  // Help's "Ask staff a question" opens Discussions with the question form already open.
+  document.getElementById('help-ask-btn').addEventListener('click', function () {
+    var raise = document.getElementById('ticket-raise');
+    if (raise) {
+      raise.open = true;
+    }
+  });
+
   document.getElementById('delete-my-account-btn').addEventListener('click', function () {
     if (currentProfile) {
       openDeleteUser({ id: currentProfile.id, username: currentProfile.username }, this, true);
@@ -8235,9 +9372,14 @@ input[type="file"] {
      LOAD COURSES ADMIN
   ======================================================== */
 
+  var coursesAdminLoadToken = 0;
+
   function loadCoursesAdmin() {
     var container = document.getElementById('courses-list');
     container.innerHTML = '';
+    // Loads can overlap (opening the admin view and the Courses page both
+    // ask, or switching Home/Other Courses quickly); only the newest draws.
+    var token = ++coursesAdminLoadToken;
 
     sb
       .from('courses')
@@ -8245,6 +9387,9 @@ input[type="file"] {
       .eq('section', currentCourseSection)
       .order('order_index')
       .then(function (res) {
+        if (token !== coursesAdminLoadToken) {
+          return;
+        }
 
         if (res.error) {
           container.innerHTML = '<p class="topic-item__empty">Could not load courses.</p>';
@@ -8311,19 +9456,26 @@ input[type="file"] {
           deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
-            if (confirm('Delete "' + course.title + '" and all of its topics, materials, and quizzes?')) {
+            confirmAction({
+              title: 'Delete this course?',
+              text: '"' + course.title + '" and all of its topics, learning materials and quizzes will be deleted. This cannot be undone.',
+              confirmLabel: 'Delete course'
+            }).then(function (ok) {
+              if (!ok) {
+                return;
+              }
               sb
                 .from('courses')
                 .delete()
                 .eq('id', course.id)
                 .then(function (deleteResult) {
                   if (deleteResult.error) {
-                    alert('Delete failed: ' + deleteResult.error.message);
+                    showToast('Could not delete: ' + deleteResult.error.message, 'error');
                     return;
                   }
                   loadCoursesAdmin();
                 });
-            }
+            });
           });
 
           actions.appendChild(upBtn);
@@ -8458,9 +9610,14 @@ input[type="file"] {
      LOAD TOPICS ADMIN
   ======================================================== */
 
+  var topicsAdminLoadToken = 0;
+
   function loadTopicsAdmin() {
     var container = document.getElementById('topics-admin-list');
     container.innerHTML = '';
+    // Only the newest load draws, so a slow answer for another course never
+    // lands in this list.
+    var token = ++topicsAdminLoadToken;
 
     sb
       .from('course_topics')
@@ -8468,6 +9625,9 @@ input[type="file"] {
       .eq('course_id', currentAdminCourseId)
       .order('order_index')
       .then(function (res) {
+        if (token !== topicsAdminLoadToken) {
+          return;
+        }
 
         if (res.error) {
           container.innerHTML = '<p class="topic-item__empty">Could not load topics.</p>';
@@ -8534,19 +9694,26 @@ input[type="file"] {
           deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
-            if (confirm('Delete topic "' + topic.title + '" and its material and quiz?')) {
+            confirmAction({
+              title: 'Delete this topic?',
+              text: '"' + topic.title + '" and its learning material and quiz will be deleted. This cannot be undone.',
+              confirmLabel: 'Delete topic'
+            }).then(function (ok) {
+              if (!ok) {
+                return;
+              }
               sb
                 .from('course_topics')
                 .delete()
                 .eq('id', topic.id)
                 .then(function (deleteResult) {
                   if (deleteResult.error) {
-                    alert('Delete failed: ' + deleteResult.error.message);
+                    showToast('Could not delete: ' + deleteResult.error.message, 'error');
                     return;
                   }
                   loadTopicsAdmin();
                 });
-            }
+            });
           });
 
           actions.appendChild(upBtn);
@@ -8665,42 +9832,53 @@ input[type="file"] {
   ======================================================== */
 
   function removeMaterial(topicId, path) {
-    if (!confirm('Remove this learning material?')) {
-      return;
-    }
+    confirmAction({
+      title: 'Remove this learning material?',
+      text: 'The file will be deleted from this topic.',
+      confirmLabel: 'Remove file'
+    }).then(function (ok) {
+      if (!ok) {
+        return;
+      }
 
-    sb.storage
-      .from('course-materials')
-      .remove([path])
-      .then(function (storageResult) {
+      sb.storage
+        .from('course-materials')
+        .remove([path])
+        .then(function (storageResult) {
 
-        if (storageResult.error) {
-          alert('Could not remove file: ' + storageResult.error.message);
-          return;
-        }
+          if (storageResult.error) {
+            showToast('Could not remove file: ' + storageResult.error.message, 'error');
+            return;
+          }
 
-        sb
-          .from('course_topics')
-          .update({ material_path: null, material_name: null })
-          .eq('id', topicId)
-          .then(function (dbResult) {
-            if (dbResult.error) {
-              alert('Could not update topic: ' + dbResult.error.message);
-              return;
-            }
-            loadTopicsAdmin();
-          });
-      });
+          sb
+            .from('course_topics')
+            .update({ material_path: null, material_name: null })
+            .eq('id', topicId)
+            .then(function (dbResult) {
+              if (dbResult.error) {
+                showToast('Could not update topic: ' + dbResult.error.message, 'error');
+                return;
+              }
+              loadTopicsAdmin();
+            });
+        });
+    });
   }
 
   /* ========================================================
      LOAD QUESTIONS ADMIN
   ======================================================== */
 
+  var questionsAdminLoadToken = 0;
+
   function loadQuestionsAdmin() {
     var container = document.getElementById('questions-admin-list');
     var status = document.getElementById('quiz-count-status');
     container.innerHTML = '';
+    // Only the newest load draws, so a slow answer for another topic never
+    // lands in this list.
+    var token = ++questionsAdminLoadToken;
 
     sb
       .from('topic_questions')
@@ -8708,6 +9886,9 @@ input[type="file"] {
       .eq('topic_id', currentAdminTopicId)
       .order('order_index')
       .then(function (res) {
+        if (token !== questionsAdminLoadToken) {
+          return;
+        }
 
         if (res.error) {
           container.innerHTML = '<p class="topic-item__empty">Could not load questions.</p>';
@@ -8754,19 +9935,26 @@ input[type="file"] {
           deleteBtn.className = 'ledger-table__btn ledger-table__btn--danger';
           deleteBtn.textContent = 'Delete';
           deleteBtn.addEventListener('click', function () {
-            if (confirm('Delete this question?')) {
+            confirmAction({
+              title: 'Delete this question?',
+              text: 'It will be removed from the quiz. This cannot be undone.',
+              confirmLabel: 'Delete question'
+            }).then(function (ok) {
+              if (!ok) {
+                return;
+              }
               sb
                 .from('topic_questions')
                 .delete()
                 .eq('id', question.id)
                 .then(function (deleteResult) {
                   if (deleteResult.error) {
-                    alert('Delete failed: ' + deleteResult.error.message);
+                    showToast('Could not delete: ' + deleteResult.error.message, 'error');
                     return;
                   }
                   loadQuestionsAdmin();
                 });
-            }
+            });
           });
 
           actions.appendChild(editBtn);
@@ -9673,31 +10861,37 @@ input[type="file"] {
         return;
       }
 
-      if (!confirm('Remove "' + row.file_name + '" from this topic?')) {
-        return;
-      }
+      confirmAction({
+        title: 'Remove this file?',
+        text: '"' + row.file_name + '" will be removed from this topic.',
+        confirmLabel: 'Remove file'
+      }).then(function (ok) {
+        if (!ok) {
+          return;
+        }
 
-      sb.storage
-        .from('course-materials')
-        .remove([row.file_path])
-        .then(function (storageResult) {
+        sb.storage
+          .from('course-materials')
+          .remove([row.file_path])
+          .then(function (storageResult) {
 
-          if (storageResult.error) {
-            status.textContent = 'Could not remove the file: ' + storageResult.error.message;
-            return;
-          }
+            if (storageResult.error) {
+              status.textContent = 'Could not remove the file: ' + storageResult.error.message;
+              return;
+            }
 
-          sb
-            .from('topic_materials')
-            .delete()
-            .eq('id', row.id)
-            .then(function (deleteResult) {
-              if (deleteResult.error) {
-                status.textContent = 'File removed, but the list entry could not be deleted: ' + deleteResult.error.message;
-              }
-              loadItems();
-            });
-        });
+            sb
+              .from('topic_materials')
+              .delete()
+              .eq('id', row.id)
+              .then(function (deleteResult) {
+                if (deleteResult.error) {
+                  status.textContent = 'File removed, but the list entry could not be deleted: ' + deleteResult.error.message;
+                }
+                loadItems();
+              });
+          });
+      });
     }
 
     function renderItems(rows) {
@@ -10022,7 +11216,7 @@ input[type="file"] {
       .then(function (res) {
 
         if (res.error || !res.data) {
-          alert('Could not prepare the download' + (res.error ? ': ' + res.error.message : '.'));
+          showToast('Could not prepare the download' + (res.error ? ': ' + res.error.message : '.'), 'error');
           return;
         }
 
@@ -10049,7 +11243,7 @@ input[type="file"] {
 
         if (res.error || !res.data) {
           closeViewer(false);
-          alert('Could not open the preview' + (res.error ? ': ' + res.error.message : '.'));
+          showToast('Could not open the preview' + (res.error ? ': ' + res.error.message : '.'), 'error');
           return;
         }
 
@@ -10075,32 +11269,38 @@ input[type="file"] {
   }
 
   function deleteKpi(row, button) {
-    if (!confirm('Delete "' + row.title + '"? This cannot be undone.')) {
-      return;
-    }
+    confirmAction({
+      title: 'Delete this report?',
+      text: '"' + row.title + '" will be deleted. This cannot be undone.',
+      confirmLabel: 'Delete report'
+    }).then(function (ok) {
+      if (!ok) {
+        return;
+      }
 
-    button.disabled = true;
+      button.disabled = true;
 
-    sb
-      .from('kpi_presentations')
-      .delete()
-      .eq('id', row.id)
-      .select('id')
-      .then(function (res) {
+      sb
+        .from('kpi_presentations')
+        .delete()
+        .eq('id', row.id)
+        .select('id')
+        .then(function (res) {
 
-        if (res.error || !res.data || res.data.length === 0) {
-          button.disabled = false;
-          alert('Could not delete this report' + (res.error ? ': ' + res.error.message : '.'));
-          return;
-        }
-
-        sb.storage.from(KPI_BUCKET).remove([row.file_path]).then(function (storageResult) {
-          if (storageResult.error) {
-            console.warn('Could not remove the KPI file:', storageResult.error);
+          if (res.error || !res.data || res.data.length === 0) {
+            button.disabled = false;
+            showToast('Could not delete this report' + (res.error ? ': ' + res.error.message : '.'), 'error');
+            return;
           }
-          loadMyKpi();
+
+          sb.storage.from(KPI_BUCKET).remove([row.file_path]).then(function (storageResult) {
+            if (storageResult.error) {
+              console.warn('Could not remove the KPI file:', storageResult.error);
+            }
+            loadMyKpi();
+          });
         });
-      });
+    });
   }
 
   function buildKpiCard(row, isLatest) {
@@ -11974,7 +13174,7 @@ input[type="file"] {
         .then(function (res) {
           if (res.error) {
             toggle.disabled = false;
-            alert('Could not change the status: ' + res.error.message);
+            showToast('Could not change the status: ' + res.error.message, 'error');
             return;
           }
           loadTopicsAdmin();
@@ -12349,6 +13549,7 @@ input[type="file"] {
 
       // Course pages close the menu so they open full width; every other page brings it back.
       setMenuCollapsed(link.hasAttribute('data-fullscreen'));
+      updatePageHeader(target);
 
       if (target === currentPanelId) {
         return true;
@@ -12389,6 +13590,9 @@ input[type="file"] {
         if (target === 'kpi-review') {
           loadKpiReview();
         }
+        if (target === 'announcements') {
+          loadAdminAnnouncements();
+        }
         if (target === 'tickets') {
           showAdminTicketList();
           loadAdminTickets();
@@ -12397,6 +13601,7 @@ input[type="file"] {
 
       if (containerId === 'view-dashboard') {
         if (target === 'home') {
+          loadAnnouncements();
           loadNextUp();
         }
         if (target === 'other-courses') {
@@ -12420,6 +13625,24 @@ input[type="file"] {
 
       fadeSwapPanel(prevPanel, nextPanel);
       return true;
+    }
+
+    // The header names the page you are on; Home (and the admin Overview)
+    // greets you by name instead, with today's date.
+    function updatePageHeader(target) {
+      var greeting = container.querySelector('.content__greeting');
+      var panel = document.getElementById(target);
+      var titleEl = panel ? panel.querySelector('.panel__title') : null;
+      var isHome = target === 'home' || target === 'overview';
+      var title = isHome
+        ? 'Hi, ' + (currentProfile ? currentProfile.username : '')
+        : (titleEl ? titleEl.textContent : '');
+
+      if (greeting) {
+        greeting.textContent = title;
+      }
+      container.classList.toggle('is-home-page', isHome);
+      document.title = (isHome ? (target === 'home' ? 'Home' : 'Overview') : title) + ' \u00b7 CLE Portal';
     }
 
     // Clicking the page you are already on doesn't change the address, so handle it here.
