@@ -4321,7 +4321,7 @@ input[type="file"] {
     min-height: 44px;
   }
 
-  /* ---------- top bar: logo, greeting, menu on one line ---------- */
+  /* ---------- top bar: menu, logo, greeting on one line ---------- */
   .content {
     padding: 0 1.25rem 2.5rem;
   }
@@ -4365,8 +4365,9 @@ input[type="file"] {
     white-space: nowrap;
   }
 
+  /* First on the left, on the side the drawer slides in from. */
   .content__header .menu-toggle {
-    order: 2;
+    order: -1;
     flex: none;
     width: 44px;
     height: 44px;
@@ -5394,131 +5395,6 @@ html.is-restoring .app-splash {
   margin: 0;
   max-width: 68ch;
 }
-
-.help-ask {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1.25rem;
-  max-width: 760px;
-  margin-top: 2rem;
-  padding: 1.25rem 1.4rem;
-  background: var(--white);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-card);
-}
-
-.help-ask__text {
-  flex: 1 1 18rem;
-  margin: 0;
-  color: var(--ink);
-}
-
-.help-ask__btn {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0.6rem 1.2rem;
-  font-weight: 700;
-  color: var(--white);
-  background: var(--navy);
-  border-radius: var(--r-ctrl);
-  text-decoration: none;
-}
-
-.help-ask__btn:hover,
-.help-ask__btn:focus-visible {
-  background: var(--steel);
-  color: var(--white);
-}
-
-/* ---------- Glossary ---------- */
-.glossary-search {
-  max-width: 760px;
-  margin-bottom: 1.25rem;
-}
-
-.glossary-search__label {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-weight: 600;
-  color: var(--navy);
-}
-
-.glossary-search__input {
-  width: 100%;
-  min-height: 48px;
-  padding: 0.7rem 1rem;
-  font: inherit;
-  color: var(--ink);
-  background: var(--white);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-ctrl);
-}
-
-.glossary-search__input:focus-visible {
-  outline: 3px solid rgba(59, 154, 225, 0.35);
-  border-color: var(--steel);
-}
-
-.glossary-search__count {
-  margin: 0.5rem 0 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.glossary-list {
-  max-width: 760px;
-  margin: 0;
-  padding: 0.25rem 1.35rem;
-  background: var(--white);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-card);
-}
-
-.glossary-entry {
-  padding: 1rem 0;
-}
-
-/* a line between visible terms only, so search results never start with one */
-.glossary-entry:not([hidden]) ~ .glossary-entry:not([hidden]) {
-  border-top: 1px solid var(--rule);
-}
-
-.glossary-entry[hidden] {
-  display: none;
-}
-
-.glossary-entry__term {
-  margin: 0 0 0.3rem;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--navy);
-}
-
-.glossary-entry__def {
-  margin: 0;
-  max-width: 68ch;
-  line-height: 1.6;
-  color: var(--ink);
-}
-
-.glossary-empty,
-.glossary-note {
-  max-width: 760px;
-  color: var(--muted);
-}
-
-.glossary-empty {
-  margin: 1rem 0 0;
-}
-
-.glossary-note {
-  margin: 1.25rem 0 0;
-  font-size: 0.92rem;
-}
-
 /* ---------- Announcements ---------- */
 .announcements {
   margin: 0 0 1.75rem;
@@ -5606,11 +5482,102 @@ html.is-restoring .app-splash {
 .announcement__delete {
   margin-top: 0.75rem;
 }
+
+/* ---------- Help contacts ---------- */
+.help-contacts {
+  max-width: 760px;
+  margin-top: 2rem;
+}
+
+.help-contacts[hidden] {
+  display: none;
+}
+
+.help-contacts__lead {
+  margin: 0 0 1rem;
+  color: var(--muted);
+}
+
+.contact-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.contact-card__body {
+  flex: 1;
+}
+
+.contact-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.contact-card__role {
+  margin: 0.15rem 0 0.5rem;
+  color: var(--muted);
+}
+
+/* Each link is a full-height tap target: mail app or phone dialer. */
+.contact-card__link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--signal-ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.contact-card__link:hover,
+.contact-card__link:focus-visible {
+  text-decoration: underline;
+}
+
+.contact-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+#contacts-admin-list {
+  max-width: 760px;
+}
+
+#contact-form {
+  scroll-margin-top: 6rem;
+}
+
+.contact-form__hint {
+  margin: -0.4rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-glossary" viewBox="0 0 24 24"><path d="M10 19h-6a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1h6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-6a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2z" /><path d="M12 5v16" /><path d="M7 7h1" /><path d="M7 11h1" /><path d="M16 7h1" /><path d="M16 11h1" /></symbol><symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M18 8a3 3 0 0 1 0 6" /><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" /><path d="M12 8l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="cle-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#0D173B"/><rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#3B9AE1" stroke-opacity=".55" stroke-width="3"/><path d="M12 30C20 12 40 10 50 20" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><path d="M44 13.5L51 20L42.5 23.5" fill="none" stroke="#3B9AE1" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="32" width="36" height="18" rx="3" fill="#F1C40F"/><path d="M22 36v10M29 36v10M36 36v10M43 36v10" stroke="#0D173B" stroke-width="2.2" stroke-linecap="round"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="i-help" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-exams" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 14l2 2l4 -4" /></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" /><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" /></symbol><symbol id="i-usercheck" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6" /><path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10" /><path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14" /><path d="M4 20h14" /></symbol><symbol id="i-podium" viewBox="0 0 24 24"><path d="M9 10h6v10h-6z" /><path d="M3 14h6v6h-6z" /><path d="M15 16h6v4h-6z" /><path d="M12 3l.9 1.8l2 .3l-1.45 1.4l.35 2l-1.8 -.95l-1.8 .95l.35 -2l-1.45 -1.4l2 -.3z" /></symbol><symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M18 8a3 3 0 0 1 0 6" /><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" /><path d="M12 8l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" /></symbol><symbol id="i-lifebuoy" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M15 15l3.35 3.35" /><path d="M9 15l-3.35 3.35" /><path d="M5.65 5.65l3.35 3.35" /><path d="M18.35 5.65l-3.35 3.35" /></symbol><symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></symbol><symbol id="i-address-book" viewBox="0 0 24 24"><path d="M20 6v12a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2z" /><path d="M10 16h6" /><path d="M11 11a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M4 8h3" /><path d="M4 12h3" /><path d="M4 16h3" /></symbol></defs></svg>
 
 <!-- =========================================================
      LOADING TRUCK
@@ -6110,7 +6077,6 @@ html.is-restoring .app-splash {
       <li><a href="#/home" class="sidebar__link is-active" data-section="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a></li>
       <li><a href="#/help" class="sidebar__link" data-section="help"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Help</span></a></li>
       <li><a href="#/exams" class="sidebar__link" data-section="exams"><svg class="ico" aria-hidden="true"><use href="#i-exams"/></svg><span>Exams</span></a></li>
-      <li><a href="#/glossary" class="sidebar__link" data-section="glossary"><svg class="ico" aria-hidden="true"><use href="#i-glossary"/></svg><span>Glossary</span></a></li>
       <li class="sidebar__item--phone"><a href="#/rank-report" class="sidebar__link" data-section="rank-report"><svg class="ico" aria-hidden="true"><use href="#i-podium"/></svg><span>Rank Report</span></a></li>
       <li><a href="#/discussions" class="sidebar__link" data-section="discussions"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span>Discussions</span><span class="nav-badge" id="nav-badge-discussions" hidden></span></a></li>
       <li><a href="#/other-courses" class="sidebar__link" data-section="other-courses"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span>Other Courses</span></a></li>
@@ -6229,7 +6195,7 @@ html.is-restoring .app-splash {
 
     <section class="panel" id="help" data-panel>
       <h2 class="panel__title">Help</h2>
-      <p class="panel__lead">Answers to the questions learners ask most. Tap a question to see the answer.</p>
+      <p class="panel__lead">Answers to the questions learners ask most, and who to contact. Tap a question to see the answer.</p>
 
       <div class="help">
         <section class="help-group">
@@ -6263,29 +6229,6 @@ html.is-restoring .app-splash {
           </details>
         </section>
         <section class="help-group">
-          <h3 class="help-group__title">Quizzes, points and rank</h3>
-          <details class="help-q">
-            <summary>How are quizzes marked?</summary>
-            <div class="help-q__a"><p>Your <strong>first attempt</strong> is the one that counts. Each correct answer earns one point. You pass with 60% or more correct, and the result shows as <strong>Passed</strong> in green or <strong>Failed</strong> in red on the course page and in <strong>Exams</strong>.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>Can I retake a quiz?</summary>
-            <div class="help-q__a"><p>Yes, as often as you like: choose <strong>Revise test</strong> in Exams or <strong>Revise Quiz</strong> on the topic. Retakes are practice. They are marked so you can check yourself, but they don't change your recorded score or points.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>What happens if I fail a quiz?</summary>
-            <div class="help-q__a"><p>The topic still counts as completed, so you can move on, but your first score stays as it is. Go back over the learning material and retake the quiz for practice.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>What do Pending and Locked mean in Exams?</summary>
-            <div class="help-q__a"><p><strong>Pending</strong> means the quiz is ready for you to take. <strong>Locked</strong> means you need to finish that topic's learning material first.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>How is my rank worked out?</summary>
-            <div class="help-q__a"><p>Learners are ranked by total points. You'll find your rank and the full leaderboard on Home on a computer, and on the <strong>Rank Report</strong> page on a phone.</p></div>
-          </details>
-        </section>
-        <section class="help-group">
           <h3 class="help-group__title">KPI reports</h3>
           <details class="help-q">
             <summary>How do I upload my KPI report?</summary>
@@ -6296,42 +6239,14 @@ html.is-restoring .app-splash {
             <div class="help-q__a"><p>Yes. Your reports are listed on the same page; choose <strong>Delete</strong> on the one you want to remove.</p></div>
           </details>
         </section>
-        <section class="help-group">
-          <h3 class="help-group__title">Questions and support</h3>
-          <details class="help-q">
-            <summary>How do I ask staff a question?</summary>
-            <div class="help-q__a"><p>Open <strong>Discussions</strong> and choose <strong>Raise a Question or Ticket</strong>. Pick what it's about, write a subject and the details, and send it. Your tickets are listed at the top of Discussions.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>Who can see my question?</summary>
-            <div class="help-q__a"><p>Everyone in the portal can see discussions, so others with the same question can learn from the answer. Tick <strong>Keep this private</strong> to make it visible only to you and staff.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>How do I know staff have replied?</summary>
-            <div class="help-q__a"><p>A number appears next to <strong>Discussions</strong> in the menu, and the ticket is marked <strong>New reply</strong>.</p></div>
-          </details>
-        </section>
-        <section class="help-group">
-          <h3 class="help-group__title">Your account and the app</h3>
-          <details class="help-q">
-            <summary>How do I change my name, photo or password?</summary>
-            <div class="help-q__a"><p>On the <strong>Account</strong> page. Photos can be JPG, PNG or WEBP, up to 3 MB.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>How do I delete my account?</summary>
-            <div class="help-q__a"><p>On the <strong>Account</strong> page, choose <strong>Delete my account</strong> and type your username to confirm. This permanently deletes your account and your data and can't be undone. Read more in the <a href="privacy.html#delete">privacy policy</a>.</p></div>
-          </details>
-          <details class="help-q">
-            <summary>Can I install CLE Portal on my phone?</summary>
-            <div class="help-q__a"><p>Yes. In Chrome on Android, open the menu (⋮) and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>. On an iPhone, in Safari, tap <strong>Share</strong> and then <strong>Add to Home Screen</strong>.</p></div>
-          </details>
-        </section>
       </div>
 
-      <div class="help-ask">
-        <p class="help-ask__text">Can’t find your answer? Ask staff and they’ll reply in Discussions.</p>
-        <a href="#/discussions" class="help-ask__btn" id="help-ask-btn">Ask staff a question</a>
-      </div>
+      <!-- Filled from the help_contacts table (staff add them under Help contacts); hidden while there are none. -->
+      <section class="help-contacts" id="help-contacts" aria-labelledby="help-contacts-title" hidden>
+        <h3 class="help-group__title" id="help-contacts-title">Contacts</h3>
+        <p class="help-contacts__lead">Still need help? Reach the right person directly.</p>
+        <ul class="contact-list" id="help-contacts-list"></ul>
+      </section>
     </section>
 
     <section class="panel" id="rank-report" data-panel>
@@ -6342,187 +6257,6 @@ html.is-restoring .app-splash {
       <ol class="rank-list rank-list--page" id="rank-list-page">
         <li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="skeleton-row" aria-hidden="true"></li><li class="sr-only" role="status">Loading rankings</li>
       </ol>
-    </section>
-
-    <section class="panel" id="glossary" data-panel>
-      <h2 class="panel__title">Glossary</h2>
-      <p class="panel__lead">Customs and logistics terms in plain English. Start typing to find one.</p>
-
-      <div class="glossary-search">
-        <label class="glossary-search__label" for="glossary-search">Search the glossary</label>
-        <input type="search" id="glossary-search" class="glossary-search__input" placeholder="For example: bill of lading, FOB, IEC" autocomplete="off">
-        <p class="glossary-search__count" id="glossary-count" role="status" aria-live="polite"></p>
-      </div>
-
-      <dl class="glossary-list" id="glossary-list">
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">AD code</dt>
-            <dd class="glossary-entry__def">Authorised Dealer code. A code for the exporter's bank (a bank allowed to deal in foreign exchange), registered with customs at the port of export. Customs uses it to link shipping bills to export payments and incentives.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">AEO</dt>
-            <dd class="glossary-entry__def">Authorised Economic Operator. A customs certification for businesses with a good compliance record. Certified businesses get simpler, faster clearance.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Air Waybill (AWB)</dt>
-            <dd class="glossary-entry__def">The transport document for air cargo, issued by the airline or its agent. It is a receipt for the goods and the contract of carriage but, unlike a bill of lading, it is not a document of title.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Assessable value</dt>
-            <dd class="glossary-entry__def">The value customs uses to work out import duty. It is usually the price paid for the goods plus the cost of freight and insurance up to the port of import.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">BCD</dt>
-            <dd class="glossary-entry__def">Basic Customs Duty. The main duty on imported goods. Its rate is set in the Customs Tariff according to the product's tariff (HS) code.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Bill of Entry</dt>
-            <dd class="glossary-entry__def">The declaration an importer, or their customs broker, files with Indian Customs to clear imported goods, either for use in India (home consumption) or for storage in a bonded warehouse.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Bill of Lading (B/L)</dt>
-            <dd class="glossary-entry__def">The document a shipping line issues for goods carried by sea. It is a receipt for the cargo, evidence of the contract of carriage and, when negotiable, a document of title: whoever holds it can claim the goods.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Bonded warehouse</dt>
-            <dd class="glossary-entry__def">A warehouse licensed by customs where imported goods can be stored without paying duty until they are cleared for use in India or sent abroad again.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">CBIC</dt>
-            <dd class="glossary-entry__def">Central Board of Indirect Taxes and Customs. The body under India's Ministry of Finance that runs customs and GST.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Certificate of Origin</dt>
-            <dd class="glossary-entry__def">A document stating the country where goods were made. Importers use it to claim lower duty under trade agreements and to meet import rules.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">CFR</dt>
-            <dd class="glossary-entry__def">Cost and Freight (Incoterm, sea transport). The seller pays freight to the named destination port, but risk passes to the buyer once the goods are on board at the port of loading.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">CFS</dt>
-            <dd class="glossary-entry__def">Container Freight Station. A customs-approved facility near a port where cargo is packed into or unpacked from containers, examined and cleared.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">CIF</dt>
-            <dd class="glossary-entry__def">Cost, Insurance and Freight (Incoterm, sea transport). Like CFR, but the seller also buys minimum insurance for the goods. Risk still passes to the buyer once the goods are on board at the port of loading.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Commercial invoice</dt>
-            <dd class="glossary-entry__def">The seller's bill to the buyer, showing what was sold, quantities, prices and terms of sale. Customs uses it to check the value and description of the goods.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Consignee and consignor</dt>
-            <dd class="glossary-entry__def">The consignee is the person or company the goods are sent to. The consignor, or shipper, is the one sending them.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Customs broker</dt>
-            <dd class="glossary-entry__def">A licensed agent who handles customs clearance for importers and exporters, such as filing bills of entry and shipping bills. Earlier called a Custom House Agent (CHA).</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">DAP</dt>
-            <dd class="glossary-entry__def">Delivered at Place (Incoterm). The seller delivers the goods, ready for unloading, at the named destination. The buyer handles import clearance and pays import duties.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">DDP</dt>
-            <dd class="glossary-entry__def">Delivered Duty Paid (Incoterm). The seller delivers the goods to the named destination cleared for import, with duties paid. This puts the most responsibility on the seller.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Demurrage</dt>
-            <dd class="glossary-entry__def">A charge for leaving cargo or containers at the port or terminal beyond the free time allowed.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Detention</dt>
-            <dd class="glossary-entry__def">A charge for keeping a shipping line's container outside the port beyond the free time allowed, for example at the importer's warehouse.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">DGFT</dt>
-            <dd class="glossary-entry__def">Directorate General of Foreign Trade. The government body that runs India's Foreign Trade Policy and issues the Importer-Exporter Code (IEC).</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Duty drawback</dt>
-            <dd class="glossary-entry__def">A refund of duties paid on imported materials or inputs that are used to make goods which are then exported.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">EXW</dt>
-            <dd class="glossary-entry__def">Ex Works (Incoterm). The seller makes the goods available at its own premises. The buyer arranges everything else, including loading, transport and export clearance.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">FCA</dt>
-            <dd class="glossary-entry__def">Free Carrier (Incoterm). The seller hands the goods, cleared for export, to the carrier chosen by the buyer at a named place. Risk passes to the buyer at that point.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">FCL and LCL</dt>
-            <dd class="glossary-entry__def">Full Container Load: one shipper's cargo fills a whole container. Less than Container Load: several shippers' goods share one container.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">FOB</dt>
-            <dd class="glossary-entry__def">Free On Board (Incoterm, sea transport). The seller delivers the goods, cleared for export, on board the vessel chosen by the buyer at the named port. Risk passes once the goods are on board.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Freight forwarder</dt>
-            <dd class="glossary-entry__def">A company that arranges transport for a shipper: booking carriers, preparing documents and often combining smaller shipments.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">HS code</dt>
-            <dd class="glossary-entry__def">Harmonized System code. The international system for classifying goods, maintained by the World Customs Organization. The first six digits are the same worldwide; India uses an eight-digit code in its customs tariff.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">ICD</dt>
-            <dd class="glossary-entry__def">Inland Container Depot. A “dry port” away from the coast where cargo is cleared by customs and moved to and from seaports in containers.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">ICEGATE</dt>
-            <dd class="glossary-entry__def">Indian Customs Electronic Gateway. The CBIC's online portal for filing customs documents such as bills of entry and shipping bills.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">IEC</dt>
-            <dd class="glossary-entry__def">Importer-Exporter Code. A ten-character code issued by the DGFT that most businesses need before they can import into or export from India.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">IGM and EGM</dt>
-            <dd class="glossary-entry__def">Import General Manifest and Export General Manifest. The carrier's list of all the cargo arriving on, or leaving on, a ship or aircraft, filed with customs. For sea cargo, newer rules call these the arrival and departure manifests.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">IGST on imports</dt>
-            <dd class="glossary-entry__def">Integrated GST, charged on most imports on top of customs duty. Registered businesses can usually claim it back as input tax credit.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Incoterms</dt>
-            <dd class="glossary-entry__def">Standard trade terms published by the International Chamber of Commerce (ICC), such as FOB, CIF and DDP. Each one sets out who arranges and pays for transport, insurance and customs clearance, and where risk passes from seller to buyer.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Let Export Order (LEO)</dt>
-            <dd class="glossary-entry__def">Customs' permission to load export goods onto the ship or aircraft, given once the shipping bill has been processed and any examination is done.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Letter of credit (LC)</dt>
-            <dd class="glossary-entry__def">A bank's promise to pay the seller, as long as the seller presents the documents it asks for, such as the bill of lading and the commercial invoice.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Out of Charge (OOC)</dt>
-            <dd class="glossary-entry__def">Customs' order releasing imported goods once the bill of entry is assessed and the duty is paid, so the importer can take them away.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Packing list</dt>
-            <dd class="glossary-entry__def">A list of what is in each package of a shipment, with weights and sizes. It helps customs and the receiver check the goods.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">POL and POD</dt>
-            <dd class="glossary-entry__def">Port of loading, where goods are put on board the ship, and port of discharge, where they are taken off.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">Shipping Bill</dt>
-            <dd class="glossary-entry__def">The declaration an exporter, or their customs broker, files with Indian Customs to export goods.</dd>
-          </div>
-          <div class="glossary-entry">
-            <dt class="glossary-entry__term">TEU</dt>
-            <dd class="glossary-entry__def">Twenty-foot Equivalent Unit. A measure of container capacity: a 20-foot container is 1 TEU and a 40-foot container is 2 TEU.</dd>
-          </div>
-      </dl>
-      <p class="glossary-empty" id="glossary-empty" hidden>No term matches your search. Ask staff about it in <a href="#/discussions">Discussions</a>.</p>
-
-      <p class="glossary-note">These are short summaries to help you learn. For official rules, duty rates and the latest changes, check the CBIC and DGFT websites.</p>
     </section>
 
     <section class="panel" id="exams" data-panel>
@@ -6728,6 +6462,7 @@ html.is-restoring .app-splash {
       <li><a href="#/admin/kpi-review" class="sidebar__link" data-section="kpi-review"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>Learners&#39; KPI</span></a></li>
       <li><a href="#/admin/tickets" class="sidebar__link" data-section="tickets"><svg class="ico" aria-hidden="true"><use href="#i-lifebuoy"/></svg><span>Support Tickets</span><span class="nav-badge" id="nav-badge-tickets" hidden></span></a></li>
       <li><a href="#/admin/announcements" class="sidebar__link" data-section="announcements"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"/></svg><span>Announcements</span></a></li>
+      <li><a href="#/admin/contacts" class="sidebar__link" data-section="contacts"><svg class="ico" aria-hidden="true"><use href="#i-address-book"/></svg><span>Help contacts</span></a></li>
       <li><a href="#/admin/topics" class="sidebar__link" data-section="topics" data-fullscreen><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg><span>Topics</span></a></li>
       <li><a href="#/admin/admin-account" class="sidebar__link" data-section="admin-account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><span>Account</span></a></li>
     </ul>
@@ -6952,6 +6687,37 @@ html.is-restoring .app-splash {
 
       <h3 class="ticket-section__title">Posted announcements</h3>
       <div id="announcements-admin-list"></div>
+    </section>
+
+    <section class="panel" id="contacts" data-panel>
+      <h2 class="panel__title">Help contacts</h2>
+      <p class="panel__lead">The people learners can reach for help. Learners see them under Contacts at the bottom of the Help page, where one tap emails or calls them.</p>
+
+      <div class="entry entry--form mb-lg">
+        <form class="entry__form" id="contact-form" novalidate>
+          <label>Name
+            <input type="text" name="name" required minlength="2" maxlength="80" autocomplete="off" placeholder="For example: Priya Sharma">
+          </label>
+          <label>Role
+            <input type="text" name="role" required minlength="2" maxlength="80" autocomplete="off" placeholder="For example: Training coordinator">
+          </label>
+          <label>Email
+            <input type="email" name="email" maxlength="254" autocomplete="off" placeholder="name@company.com">
+          </label>
+          <label>Mobile number
+            <input type="tel" name="phone" maxlength="20" autocomplete="off" placeholder="+91 98765 43210">
+          </label>
+          <p class="contact-form__hint">Add an email, a mobile number, or both.</p>
+          <p class="entry__error" id="contact-error" role="alert"></p>
+          <div class="button-row">
+            <button type="submit" id="contact-submit">Add contact</button>
+            <button type="button" class="btn-secondary" id="contact-cancel" style="display:none;">Cancel edit</button>
+          </div>
+        </form>
+      </div>
+
+      <h3 class="ticket-section__title">On the Help page</h3>
+      <div id="contacts-admin-list"></div>
     </section>
 
     <section class="panel" id="tickets" data-panel>
@@ -8189,6 +7955,273 @@ html.is-restoring .app-splash {
   });
 
   /* ========================================================
+     HELP CONTACTS
+     Staff add the people learners can reach (name, role, email,
+     mobile); learners see them as cards at the bottom of Help.
+     Text is always inserted as text, never as HTML.
+  ======================================================== */
+
+  var editingContactId = null;
+
+  function contactLink(href, icon, hiddenPrefix, text) {
+    var link = document.createElement('a');
+    link.className = 'contact-card__link';
+    link.href = href;
+    link.innerHTML = '<svg class="ico" aria-hidden="true"><use href="#' + icon + '"/></svg>';
+
+    var prefix = document.createElement('span');
+    prefix.className = 'sr-only';
+    prefix.textContent = hiddenPrefix;
+
+    var label = document.createElement('span');
+    label.textContent = text;
+
+    link.appendChild(prefix);
+    link.appendChild(label);
+    return link;
+  }
+
+  function buildContactCard(row, withActions) {
+    var card = document.createElement('li');
+    card.className = 'contact-card';
+
+    var name = document.createElement('p');
+    name.className = 'contact-card__name';
+    name.textContent = row.name;
+
+    var role = document.createElement('p');
+    role.className = 'contact-card__role';
+    role.textContent = row.role;
+
+    // The details grow, so Edit and Remove line up along the bottom of a row of cards.
+    var body = document.createElement('div');
+    body.className = 'contact-card__body';
+    body.appendChild(name);
+    body.appendChild(role);
+
+    if (row.email) {
+      body.appendChild(contactLink('mailto:' + row.email, 'i-mail', 'Email ', row.email));
+    }
+    if (row.phone) {
+      body.appendChild(contactLink('tel:' + row.phone.replace(/[^\d+]/g, ''), 'i-phone', 'Call ', row.phone));
+    }
+    card.appendChild(body);
+
+    if (withActions) {
+      var actions = document.createElement('div');
+      actions.className = 'contact-card__actions';
+
+      var edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'ledger-table__btn';
+      edit.textContent = 'Edit';
+      edit.addEventListener('click', function () {
+        startContactEdit(row);
+      });
+
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'ledger-table__btn ledger-table__btn--danger';
+      remove.textContent = 'Remove';
+      remove.addEventListener('click', function () {
+        confirmAction({
+          title: 'Remove this contact?',
+          text: '"' + row.name + '" will no longer be listed on the learner Help page.',
+          confirmLabel: 'Remove contact'
+        }).then(function (ok) {
+          if (!ok) {
+            return;
+          }
+          remove.disabled = true;
+          sb.from('help_contacts').delete().eq('id', row.id).select('id').then(function (res) {
+            if (res.error || !res.data || res.data.length === 0) {
+              remove.disabled = false;
+              showToast('Could not remove the contact' + (res.error ? ': ' + res.error.message : '.'), 'error');
+              return;
+            }
+            if (editingContactId === row.id) {
+              resetContactForm();
+            }
+            showToast('Contact removed.', 'success');
+            loadAdminContacts();
+          });
+        });
+      });
+
+      actions.appendChild(edit);
+      actions.appendChild(remove);
+      card.appendChild(actions);
+    }
+
+    return card;
+  }
+
+  var helpContactsToken = 0;
+
+  function loadHelpContacts() {
+    var box = document.getElementById('help-contacts');
+    var list = document.getElementById('help-contacts-list');
+
+    if (!box || !currentProfile) {
+      return;
+    }
+
+    var token = ++helpContactsToken;
+
+    sb.from('help_contacts')
+      .select('id, name, role, email, phone')
+      .order('created_at')
+      .then(function (res) {
+        if (token !== helpContactsToken) {
+          return;
+        }
+        if (res.error) {
+          console.error('Could not load help contacts:', res.error);
+        }
+        if (res.error || !res.data || res.data.length === 0) {
+          box.hidden = true;
+          return;
+        }
+        list.innerHTML = '';
+        res.data.forEach(function (row) {
+          list.appendChild(buildContactCard(row, false));
+        });
+        box.hidden = false;
+      });
+  }
+
+  var adminContactsToken = 0;
+
+  function loadAdminContacts() {
+    var root = document.getElementById('contacts-admin-list');
+    if (!root) {
+      return;
+    }
+
+    var token = ++adminContactsToken;
+    root.innerHTML = '<div class="skeleton-card" aria-hidden="true"></div><p class="sr-only" role="status">Loading contacts</p>';
+
+    sb.from('help_contacts')
+      .select('id, name, role, email, phone')
+      .order('created_at')
+      .then(function (res) {
+        if (token !== adminContactsToken) {
+          return;
+        }
+        root.innerHTML = '';
+
+        if (res.error) {
+          var error = document.createElement('p');
+          error.className = 'entry__error';
+          error.textContent = 'Could not load contacts: ' + res.error.message;
+          root.appendChild(error);
+          return;
+        }
+
+        if (!res.data || res.data.length === 0) {
+          var empty = document.createElement('p');
+          empty.className = 'home-btn-note';
+          empty.textContent = 'No contacts yet. The people you add here appear under Contacts on every learner\'s Help page.';
+          root.appendChild(empty);
+          return;
+        }
+
+        var list = document.createElement('ul');
+        list.className = 'contact-list';
+        res.data.forEach(function (row) {
+          list.appendChild(buildContactCard(row, true));
+        });
+        root.appendChild(list);
+      });
+  }
+
+  // Mirrors the database rules for help_contacts, so mistakes are explained before saving.
+  function contactProblem(contact) {
+    if (contact.name.length < 2 || contact.name.length > 80) {
+      return 'Enter a name between 2 and 80 characters.';
+    }
+    if (contact.role.length < 2 || contact.role.length > 80) {
+      return 'Enter a role between 2 and 80 characters, for example Training coordinator.';
+    }
+    if (!contact.email && !contact.phone) {
+      return 'Add an email, a mobile number, or both, so learners can reach this person.';
+    }
+    if (contact.email && (contact.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email))) {
+      return 'Check the email address, for example name@company.com.';
+    }
+    if (contact.phone && (!/^\+?[0-9 ()-]{7,20}$/.test(contact.phone) || contact.phone.replace(/\D/g, '').length < 7)) {
+      return 'Check the mobile number: digits, spaces, + and - only, for example +91 98765 43210.';
+    }
+    return '';
+  }
+
+  function resetContactForm() {
+    editingContactId = null;
+    document.getElementById('contact-form').reset();
+    document.getElementById('contact-error').textContent = '';
+    document.getElementById('contact-submit').textContent = 'Add contact';
+    document.getElementById('contact-cancel').style.display = 'none';
+  }
+
+  function startContactEdit(row) {
+    var form = document.getElementById('contact-form');
+    editingContactId = row.id;
+    form.elements.name.value = row.name;
+    form.elements.role.value = row.role;
+    form.elements.email.value = row.email || '';
+    form.elements.phone.value = row.phone || '';
+    document.getElementById('contact-error').textContent = '';
+    document.getElementById('contact-submit').textContent = 'Save changes';
+    document.getElementById('contact-cancel').style.display = '';
+    form.scrollIntoView({ block: 'start', behavior: REDUCED_MOTION.matches ? 'auto' : 'smooth' });
+    form.elements.name.focus({ preventScroll: true });
+  }
+
+  document.getElementById('contact-cancel').addEventListener('click', resetContactForm);
+
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var form = e.target;
+    var errorEl = document.getElementById('contact-error');
+    var submitBtn = document.getElementById('contact-submit');
+    var editingId = editingContactId;
+    var contact = {
+      name: form.elements.name.value.trim(),
+      role: form.elements.role.value.trim(),
+      email: form.elements.email.value.trim() || null,
+      phone: form.elements.phone.value.trim() || null
+    };
+
+    errorEl.textContent = contactProblem(contact);
+    if (errorEl.textContent) {
+      return;
+    }
+
+    submitBtn.disabled = true;
+
+    (editingId
+      ? sb.from('help_contacts').update(contact).eq('id', editingId).select('id')
+      : sb.from('help_contacts').insert(contact)
+    ).then(function (res) {
+      submitBtn.disabled = false;
+
+      if (res.error) {
+        errorEl.textContent = 'Could not save the contact: ' + res.error.message;
+        return;
+      }
+      if (editingId && (!res.data || res.data.length === 0)) {
+        errorEl.textContent = 'Could not save the changes: this contact may have been removed. Reload the page and try again.';
+        return;
+      }
+
+      resetContactForm();
+      showToast(editingId ? 'Contact updated.' : 'Contact added. Learners will see it on the Help page.', 'success');
+      loadAdminContacts();
+    });
+  });
+
+  /* ========================================================
      NEXT CHECKPOINT (top of the learner Home page)
      Finds the first topic the learner hasn't cleared, in course order,
      so they can pick up where they left off in one click.
@@ -9351,57 +9384,6 @@ html.is-restoring .app-splash {
   });
 
   document.getElementById('delete-user-cancel').addEventListener('click', closeDeleteUser);
-
-  /* ========================================================
-     GLOSSARY SEARCH
-     Filters the terms as you type, matching the term or its explanation.
-  ======================================================== */
-
-  (function wireGlossary() {
-    var input = document.getElementById('glossary-search');
-    var entries = Array.prototype.slice.call(document.querySelectorAll('#glossary-list .glossary-entry'));
-    var count = document.getElementById('glossary-count');
-    var empty = document.getElementById('glossary-empty');
-
-    if (!input || !entries.length) {
-      return;
-    }
-
-    var searchable = entries.map(function (entry) {
-      return entry.textContent.toLowerCase().replace(/\s+/g, ' ');
-    });
-
-    function filter() {
-      var words = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
-      var shown = 0;
-
-      entries.forEach(function (entry, index) {
-        var match = words.every(function (word) {
-          return searchable[index].indexOf(word) !== -1;
-        });
-        entry.hidden = !match;
-        if (match) {
-          shown += 1;
-        }
-      });
-
-      empty.hidden = shown !== 0;
-      count.textContent = words.length
-        ? shown + ' of ' + entries.length + ' terms match'
-        : entries.length + ' terms';
-    }
-
-    input.addEventListener('input', filter);
-    filter();
-  })();
-
-  // Help's "Ask staff a question" opens Discussions with the question form already open.
-  document.getElementById('help-ask-btn').addEventListener('click', function () {
-    var raise = document.getElementById('ticket-raise');
-    if (raise) {
-      raise.open = true;
-    }
-  });
 
   document.getElementById('delete-my-account-btn').addEventListener('click', function () {
     if (currentProfile) {
@@ -13868,6 +13850,9 @@ html.is-restoring .app-splash {
         if (target === 'announcements') {
           loadAdminAnnouncements();
         }
+        if (target === 'contacts') {
+          loadAdminContacts();
+        }
         if (target === 'tickets') {
           showAdminTicketList();
           loadAdminTickets();
@@ -13890,6 +13875,9 @@ html.is-restoring .app-splash {
         }
         if (target === 'kpi-report') {
           loadMyKpi();
+        }
+        if (target === 'help') {
+          loadHelpContacts();
         }
         if (target === 'discussions') {
           loadTicketTopicOptions();
