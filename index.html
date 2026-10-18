@@ -1172,6 +1172,65 @@ button:disabled {
   margin-top: 1rem;
 }
 
+/* After-quiz review: every question marked right/wrong with the answers. */
+.quiz-breakdown {
+  margin-top: 1.25rem;
+}
+
+.quiz-breakdown__title {
+  font-size: 1.05rem;
+  margin: 0 0 0.75rem;
+}
+
+.quiz-breakdown__item {
+  background: var(--white);
+  border: 1px solid var(--paper-line);
+  border-left: 4px solid var(--paper-line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-breakdown__item--correct {
+  border-left-color: var(--pass-ink);
+  background: var(--pass-bg);
+}
+
+.quiz-breakdown__item--wrong {
+  border-left-color: var(--fail-ink);
+  background: var(--fail-bg);
+}
+
+.quiz-breakdown__q {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.quiz-breakdown__badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.5rem;
+  margin-right: 0.4rem;
+  border-radius: var(--r-pill);
+  color: var(--white);
+  vertical-align: 0.08em;
+}
+
+.quiz-breakdown__item--correct .quiz-breakdown__badge { background: var(--pass-ink); }
+.quiz-breakdown__item--wrong .quiz-breakdown__badge { background: var(--fail-ink); }
+
+.quiz-breakdown__answer {
+  margin: 0.15rem 0 0;
+  color: var(--ink);
+}
+
+.quiz-breakdown__answer--right {
+  color: var(--pass-ink);
+}
+
 /* =========================================================
    TABLES
 ========================================================= */
@@ -3481,7 +3540,7 @@ p,
 .carousel__open { background: none; border: 0; padding: 0.25rem 0.5rem; cursor: pointer; font: inherit; font-weight: 600; color: var(--steel); }
 .carousel.is-fullscreen { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; justify-content: center; margin: 0; padding: 1rem; background: #0b1117; color: #fff; border-radius: 0; overflow: auto; }
 .carousel.is-fullscreen .carousel__viewport { background: transparent; border: 0; }
-.carousel.is-fullscreen .carousel__slide img { max-height: 78vh; max-width: 100%; margin: 0 auto; border-radius: 12px; object-fit: contain; }
+.carousel.is-fullscreen .carousel__slide img { width: auto; height: auto; max-height: 86vh; max-width: 96vw; margin: 0 auto; border-radius: 12px; object-fit: contain; }
 .carousel.is-fullscreen .carousel__slide figcaption,
 .carousel.is-fullscreen .carousel__count,
 .carousel.is-fullscreen .carousel__open,
@@ -3638,7 +3697,7 @@ p,
 .doc-viewer__btn--primary:hover, .doc-viewer__btn--primary:focus-visible { background: var(--white); border-color: var(--white); }
 .doc-viewer__body { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
 .doc-viewer__frame { width: 100%; height: 100%; border: 0; background: var(--white); }
-.doc-viewer__image { max-width: 100%; max-height: 100%; object-fit: contain; padding: 1rem; }
+.doc-viewer__image { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; padding: 1rem; }
 .doc-viewer__status { margin: 0; padding: 1rem; text-align: center; }
 body.has-viewer { overflow: hidden; }
 
@@ -8368,6 +8427,66 @@ html.is-restoring .app-splash {
     return { pct: pct, passed: (score || 0) / total >= PASS_MARK };
   }
 
+  // After a quiz is graded, list every question marked correct/incorrect, with
+  // the learner's answer and -- for the wrong ones -- the correct answer.
+  // Everything is inserted as text (never innerHTML), since questions and
+  // options are admin-authored.
+  function renderQuizBreakdown(container, questions) {
+    if (!questions || !questions.length) {
+      return;
+    }
+
+    var wrap = document.createElement('div');
+    wrap.className = 'quiz-breakdown';
+
+    var title = document.createElement('h3');
+    title.className = 'quiz-breakdown__title';
+    title.textContent = 'Review your answers';
+    wrap.appendChild(title);
+
+    questions.forEach(function (q, index) {
+      var opts = q.options || {};
+
+      var item = document.createElement('div');
+      item.className = 'quiz-breakdown__item ' + (q.is_correct ? 'quiz-breakdown__item--correct' : 'quiz-breakdown__item--wrong');
+
+      var qLine = document.createElement('p');
+      qLine.className = 'quiz-breakdown__q';
+      var badge = document.createElement('span');
+      badge.className = 'quiz-breakdown__badge';
+      badge.textContent = q.is_correct ? 'Correct' : 'Incorrect';
+      qLine.appendChild(badge);
+      qLine.appendChild(document.createTextNode(' ' + (index + 1) + '. ' + (q.question || '')));
+      item.appendChild(qLine);
+
+      var yourLine = document.createElement('p');
+      yourLine.className = 'quiz-breakdown__answer';
+      var yourLabel = document.createElement('strong');
+      yourLabel.textContent = 'Your answer: ';
+      yourLine.appendChild(yourLabel);
+      yourLine.appendChild(document.createTextNode(
+        (q.your_answer && opts[q.your_answer] != null) ? opts[q.your_answer] : 'No answer'
+      ));
+      item.appendChild(yourLine);
+
+      if (!q.is_correct) {
+        var correctLine = document.createElement('p');
+        correctLine.className = 'quiz-breakdown__answer quiz-breakdown__answer--right';
+        var correctLabel = document.createElement('strong');
+        correctLabel.textContent = 'Correct answer: ';
+        correctLine.appendChild(correctLabel);
+        correctLine.appendChild(document.createTextNode(
+          (q.correct_option && opts[q.correct_option] != null) ? opts[q.correct_option] : ''
+        ));
+        item.appendChild(correctLine);
+      }
+
+      wrap.appendChild(item);
+    });
+
+    container.appendChild(wrap);
+  }
+
   // Green "Passed 83%" or red "Failed 33%", with the date it was taken.
   function buildResultLabel(score, total, completedAt) {
     var outcome = quizOutcome(score, total);
@@ -9023,63 +9142,67 @@ html.is-restoring .app-splash {
       resultEl.innerHTML = '<p class="home-btn-note">Grading…</p>';
       submitBtn.disabled = true;
 
-      sb.functions
-        .invoke('submit-quiz', { body: { topic_id: topicId, answers: answers } })
+      // Graded in one database call (grade_quiz): no edge-function cold start,
+      // and the response carries a per-question breakdown for the review below.
+      sb.rpc('grade_quiz', { p_topic_id: topicId, p_answers: answers })
         .then(function (res) {
 
           if (res.error) {
-            parseFunctionError(res.error, function (message) {
-              resultEl.innerHTML = '';
-              var p = document.createElement('p');
-              p.className = 'entry__error';
-              p.textContent = message;
-              resultEl.appendChild(p);
-            });
+            resultEl.innerHTML = '';
+            var p = document.createElement('p');
+            p.className = 'entry__error';
+            p.textContent = (res.error && res.error.message)
+              ? res.error.message
+              : 'Could not grade the quiz. Please check your connection and try again.';
+            resultEl.appendChild(p);
             submitBtn.disabled = false;
             return;
           }
 
-          var data = res.data;
+          var data = res.data || {};
           resultEl.innerHTML = '';
 
           var outcome = quizOutcome(data.correctCount, data.total) || { pct: 0, passed: false };
           var verdict = (outcome.passed ? 'Passed' : 'Not passed') + ': ' + data.correctCount + ' out of ' + data.total +
             ' correct (' + outcome.pct + '%).';
           var passNote = outcome.passed ? '' : ' The pass mark is 60%.';
-
-          if (attemptMode === 'practice') {
-            var practiceBox = document.createElement('div');
-            practiceBox.className = 'quiz-result ' + (outcome.passed ? 'quiz-result--pass' : 'quiz-result--fail');
-            practiceBox.innerHTML = '<strong>Practice attempt. ' + verdict + '</strong><br><br>' +
-              'This attempt does not add marks. Your recorded score is unchanged.' + passNote;
-            resultEl.appendChild(practiceBox);
-            submitBtn.disabled = false;
-            return;
-          }
+          // The server treats a retake of an already-completed topic as practice.
+          var isPractice = attemptMode === 'practice' || data.isPractice;
 
           var box = document.createElement('div');
           box.className = 'quiz-result ' + (outcome.passed ? 'quiz-result--pass' : 'quiz-result--fail');
-          box.innerHTML = '<strong>' + verdict + '</strong><br><br>Points awarded: +' + data.pointsAwarded + '.' + passNote;
+          box.innerHTML = isPractice
+            ? '<strong>Practice attempt. ' + verdict + '</strong><br><br>This attempt does not add marks. Your recorded score is unchanged.' + passNote
+            : '<strong>' + verdict + '</strong><br><br>Points awarded: +' + (data.pointsAwarded || 0) + '.' + passNote;
           resultEl.appendChild(box);
 
-          // The submit-quiz function records completion on the server, so the
-          // browser never writes quiz_completed / quiz_score itself.
-          if (data.isPractice) {
-            submitBtn.disabled = false;
-            return;
-          }
-
-          var nextBox = document.createElement('div');
-          nextBox.className = 'quiz-result';
-          nextBox.style.marginTop = '1rem';
-          nextBox.innerHTML = '✓ <strong>Topic completed!</strong><br><br>The next topic in the learning flow is now unlocked.';
-          resultEl.appendChild(nextBox);
+          // Review every question, with the correct answer shown for the wrong ones.
+          renderQuizBreakdown(resultEl, data.questions);
 
           loadRankReport();
 
-          window.setTimeout(function () {
-            openCourse(currentCourseId, currentCourseTitle, currentCourseDescription, true);
-          }, 1500);
+          // A real first attempt completes the topic. Let the learner read the
+          // review and continue when they choose -- no auto-redirect, which
+          // would wipe the review before it could be read.
+          if (!isPractice) {
+            var nextBox = document.createElement('div');
+            nextBox.className = 'quiz-result';
+            nextBox.style.marginTop = '1rem';
+            nextBox.innerHTML = '✓ <strong>Topic completed!</strong><br><br>The next topic in the learning flow is now unlocked.';
+            resultEl.appendChild(nextBox);
+
+            var continueBtn = document.createElement('button');
+            continueBtn.type = 'button';
+            continueBtn.className = 'home-btn';
+            continueBtn.style.marginTop = '1rem';
+            continueBtn.textContent = 'Continue';
+            continueBtn.addEventListener('click', function () {
+              openCourse(currentCourseId, currentCourseTitle, currentCourseDescription, true);
+            });
+            resultEl.appendChild(continueBtn);
+          }
+
+          submitBtn.disabled = false;
         });
     });
 

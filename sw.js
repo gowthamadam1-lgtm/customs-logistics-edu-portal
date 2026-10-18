@@ -5,7 +5,7 @@
 // when the network fails. Requests to other sites (Supabase, fonts, the
 // script CDN) are never touched.
 
-const CACHE = 'cle-portal-v6';
+const CACHE = 'cle-portal-v7';
 const APP_SHELL = [
   './',
   './index.html',
